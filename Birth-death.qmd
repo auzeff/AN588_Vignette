@@ -1,0 +1,152 @@
+---
+title: "Constant-rate birth-death modeling in diversitree"
+author: 
+  - Sylvie Adams
+  - Carly McDermott
+  - Christian Mei
+  - Akiva Zeff
+format:
+  html:
+    toc : true
+    toc-depth: 4
+    toc-location: left
+    toc-title: "Sections"
+editor: visual
+theme: journal
+---
+
+## What exactly is birth-death modeling?
+
+Today, we'll be exploring constant-rate birth-death modeling in...
+
+------------------------------------------------------------------------
+
+## diversitree
+
+diversitree is a... \[insert eloquent, profound description here\]
+
+```{r}
+# Loading diversitree
+library(diversitree)
+```
+
+Now that we have some background on our models and package, it's time to start by...
+
+------------------------------------------------------------------------
+
+## Making a model
+
+The two most important parameters for a simple constant-rate birth-death model are λ and µ. λ represents the speciation rate in our simulated phylogeny, while µ represents the extinction rate. We'll start by making a tree using these parameters, as well as the maximum number of species we'd like our model to diversity to.
+
+```{r}
+# Defining our parameters
+lambda <- 0.2 
+mu <- 0.05
+
+# Making our tree
+set.seed(1)
+phylo <- tree.bd(c(lambda, mu), max.taxa = 100) # our tree should terminate at 100 species
+```
+
+We now have a tree modeled, but we don't see anything! Let's look a bit further into what exactly our model consists of:
+
+```{r}
+str(phylo)
+summary(phylo)
+```
+
+As we can see, our model takes the form of a list. `summary()` gives us a bit more relevant information about our tree. The labels won't be too important to us right now, but the branch length metrics can tell us something about how quickly our speciation is occurring (we'll investigate this relationship a bit further in Challenge 1).
+
+In order to actually see our tree, we need to try...
+
+------------------------------------------------------------------------
+
+## Plotting our model
+
+```{r}
+plot(phylo)
+```
+
+We can finally see our tree, but it's a bit busy. We can make it a bit simpler using some optional commands in the plot function:
+
+```{r}
+plot(phylo, no.margin = TRUE, show.tip.label = FALSE)
+# no.margin allows our plot to take up more of the output window, while show.tip.label gets rid of the labels for our simulated 100 final species
+```
+
+------------------------------------------------------------------------
+
+#### Challenge 1
+
+Make a function that takes lambda, mu, and max taxa and outputs a plot of a simulated phylogeny tree. Lambda and mu should have no default values, while max taxa should default to 100.
+
+::: {.callout-tip collapse="true"}
+## Solution
+
+```{r}
+phy_plot <- function(lambda, mu, max.taxa = 100) {
+  phy <- tree.bd(c(lambda, mu), max.taxa = max.taxa)
+  plot(phy, no.margin = TRUE, show.tip.label = FALSE)
+}
+```
+
+:::
+
+Using your function, experiment with different scenarios.
+
+-   What changes in our model if speciation rate and extinction rate increase/decrease?
+
+-   In what situations is your function returning an error? Why might that be?
+
+    -   Note that as we are simulating a new model each time we run the function, the same parameters will not always have the same result. If you're getting an error, try running it a few times again before giving up!
+
+-   Modify your function to include a summary of the model created. How does changing the parameters affect the mean, variance, and distribution of branch length?
+
+::: {.callout-tip collapse="true"}
+## Solution (updated)
+
+```{r}
+phy_plot <- function(lambda, mu, max.taxa = 100) {
+  phy <- tree.bd(c(lambda, mu), max.taxa = max.taxa)
+  plot(phy, no.margin = TRUE, show.tip.label = FALSE)
+  summary(phy)
+}
+```
+
+:::
+
+------------------------------------------------------------------------
+
+Making a cool tree is all well and good, but if we actually want some substantive statistics it's time to start...
+
+------------------------------------------------------------------------
+
+## Analyzing our model
+
+### Likelihood functions
+
+First things first, we need to construct a likelihood function. This function will form the backbone of both of our primary analysis methods. The function to create this likelihood function (assuming constant-rate birth-death) is `make.bd()` .
+
+```{r}
+like <- make.bd(phylo) # notice that the function is based on our model created above. That model had a seed set for it, so we can expect consistent values for "like" as well.
+```
+
+Our new function takes values of λ and µ as inputs and returns the log likelihood of the parameters. Let's try it with the values we used for our initial tree:
+
+```{r}
+like(c(0.1, 0.03))
+```
+
+When typing the function out, you may have noticed that it takes another argument, called *condition.surv*. This argument, which is on by default, dictates whether the likelihood is conditional on two lineages surviving to the present. As we can see, turning it off changes the likelihood:
+
+```{r}
+like(c(0.1, 0.03), condition.surv = FALSE)
+```
+
+------------------------------------------------------------------------
+
+### Maximum likelihood models
+
+------------------------------------------------------------------------
+
+### Markov chain Monte Carlo
