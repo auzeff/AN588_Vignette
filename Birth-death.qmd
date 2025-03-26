@@ -159,7 +159,7 @@ Remember that $N$ and $x_n$ are both defined in our tree that we're basing the l
 
 ------------------------------------------------------------------------
 
-One more note: when typing the function out, you may have noticed that it takes another argument, called *condition.surv*. This argument, which is on by default, dictates whether the likelihood is conditional on two lineages surviving to the present. As we can see, turning it off changes the likelihood
+One more note: when typing the function out, you may have noticed that it takes another argument, called *condition.surv*. This argument, which is on by default, dictates whether the likelihood is conditional on two lineages surviving to the present. As we can see, turning it off changes the likelihood (we won't get into the math behind that here).
 
 ```{r}
 lik(c(0.1, 0.03), condition.surv = FALSE)
