@@ -157,6 +157,8 @@ Why does the likelihood function take $λ$ and $µ$ as inputs, but not $N$ and $
 Remember that $N$ and $x_n$ are both defined in our tree that we're basing the likelihood function on. Likelihood functions are based on actual "observed" data–in this case our tree–and tell use the probability of seeing that result **under different parameter values**. In the case of a constant-rate birth-death model, $λ$ and $µ$ are the only two parameters. $N$ and $x_n$ are outputted aspects of the simulated phylogeny, and thus can't be changed in the likelihood function.
 :::
 
+------------------------------------------------------------------------
+
 One more note: when typing the function out, you may have noticed that it takes another argument, called *condition.surv*. This argument, which is on by default, dictates whether the likelihood is conditional on two lineages surviving to the present. As we can see, turning it off changes the likelihood
 
 ```{r}
