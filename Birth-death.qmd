@@ -36,7 +36,7 @@ Now that we have some background on our models and package, it's time to start b
 
 ## Making a model
 
-The two most important parameters for a simple constant-rate birth-death model are λ and µ. λ represents the speciation rate in our simulated phylogeny, while µ represents the extinction rate. We'll start by making a tree using these parameters, as well as the maximum number of species we'd like our model to diversity to.
+The two parameters for a simple constant-rate birth-death model are $λ$ and $µ$. λ represents the speciation rate in our simulated phylogeny, while µ represents the extinction rate. We'll start by making a tree using these parameters, as well as the maximum number of species we'd like our model to diversity to.
 
 ```{r}
 # Defining our parameters
@@ -78,7 +78,7 @@ plot(phylo, no.margin = TRUE, show.tip.label = FALSE)
 
 #### Challenge 1
 
-Make a function that takes lambda, mu, and max taxa and outputs a plot of a simulated phylogeny tree. Lambda and mu should have no default values, while max taxa should default to 100.
+Make a function that takes lambda, mu, and max taxa as inputs and outputs a plot of a simulated phylogeny tree. Lambda and mu should have no default values, while max taxa should default to 100.
 
 ::: {.callout-tip collapse="true"}
 ## Solution
@@ -89,7 +89,6 @@ phy_plot <- function(lambda, mu, max.taxa = 100) {
   plot(phy, no.margin = TRUE, show.tip.label = FALSE)
 }
 ```
-
 :::
 
 Using your function, experiment with different scenarios.
@@ -112,7 +111,6 @@ phy_plot <- function(lambda, mu, max.taxa = 100) {
   summary(phy)
 }
 ```
-
 :::
 
 ------------------------------------------------------------------------
@@ -125,22 +123,44 @@ Making a cool tree is all well and good, but if we actually want some substantiv
 
 ### Likelihood functions
 
-First things first, we need to construct a likelihood function. This function will form the backbone of both of our primary analysis methods. The function to create this likelihood function (assuming constant-rate birth-death) is `make.bd()` .
+First things first, we need to construct a likelihood function. This function will form the backbone of both of our primary analysis methods. As demonstrated in (Nee et al., 1994), the equation from which we derive our likelihood function is:
+
+$$
+lik=(N-1)!(\lambda-\mu)^{N-2}exp\left((\lambda-\mu)\sum_{n=2}^{N-1}x_{n+1}\right)(1-\frac{\mu}{\lambda})^N\prod_{n=2}^{N}\frac{1}{(exp((\lambda-\mu)x_n)-a)^2}
+$$
+
+Don't worry, we're not going to go through this whole equation! That being said, it's worthwhile to look further into some of the components that make it up.
+
+$λ$ and $µ$ are familiar–we used them earlier, and, as we'll see, they're the two parameters taken by the diversitree likelihood function. Apart from those, there are two other variables that we haven't seen before: $N$ and $x_n$. $N$ is the total number of lineages in the phylogeny, while $x_n$ represents the length of time between the present and the birth of the $n$th lineage. We'll delve a bit further into how these variables come together, but first let's actually make our likelihood function. The function to create it is `make.bd()` .
 
 ```{r}
-like <- make.bd(phylo) # notice that the function is based on our model created above. That model had a seed set for it, so we can expect consistent values for "like" as well.
+lik <- make.bd(phylo) # notice that the function is based on our model created above. That model had a seed set for it, so we can expect consistent values for "lik" as well.
 ```
 
-Our new function takes values of λ and µ as inputs and returns the log likelihood of the parameters. Let's try it with the values we used for our initial tree:
+Our new function takes values of $λ$ and $µ$ as inputs and returns the log likelihood of the parameters. Let's try it with the values we used for our initial tree:
 
 ```{r}
-like(c(0.1, 0.03))
+lik(c(0.1, 0.03))
 ```
 
-When typing the function out, you may have noticed that it takes another argument, called *condition.surv*. This argument, which is on by default, dictates whether the likelihood is conditional on two lineages surviving to the present. As we can see, turning it off changes the likelihood:
+------------------------------------------------------------------------
+
+#### Challenge 2
+
+Why does the likelihood function take $λ$ and $µ$ as inputs, but not $N$ and $x_n$?
+
+*Hint:* *what inputs did it take make the function in the first place?*
+
+::: {.callout-tip collapse="true"}
+## Solution
+
+Remember that $N$ and $x_n$ are both defined in our tree that we're basing the likelihood function on. Likelihood functions are based on actual "observed" data–in this case our tree–and tell use the probability of seeing that result **under different parameter values**. In the case of a constant-rate birth-death model, $λ$ and $µ$ are the only two parameters. $N$ and $x_n$ are outputted aspects of the simulated phylogeny, and thus can't be changed in the likelihood function.
+:::
+
+One more note: when typing the function out, you may have noticed that it takes another argument, called *condition.surv*. This argument, which is on by default, dictates whether the likelihood is conditional on two lineages surviving to the present. As we can see, turning it off changes the likelihood
 
 ```{r}
-like(c(0.1, 0.03), condition.surv = FALSE)
+lik(c(0.1, 0.03), condition.surv = FALSE)
 ```
 
 ------------------------------------------------------------------------
