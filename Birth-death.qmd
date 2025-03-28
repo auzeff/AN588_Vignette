@@ -123,15 +123,30 @@ Making a cool tree is all well and good, but if we actually want some substantiv
 
 ### Likelihood functions
 
-First things first, we need to construct a likelihood function. This function will form the backbone of both of our primary analysis methods. As demonstrated in (Nee et al., 1994), the equation from which we derive our likelihood function is:
+First things first, we need to construct a likelihood function. The likelihood function of a birth-death model estimates the probability of observing a given phylogenetic tree under the assumed rates of speciation and extinction. It will form the backbone of both of our primary analysis methods.
+
+For each branching event occurring at time $t_i$, we define:
+
+-   $p_o(t_i)$: Probability that a lineage goes extinct before time $t_i$
+
+-   $p_o(t_i)$: Probability that a lineage survives and splits by $t_i$
+
+These functions are derived from and allow for model-fitting to empirical phylogenetic data. In our case, these variables will factor into the beautiful and not at all confusing equation derived in Nee et al. (1994):
 
 $$
-lik=(N-1)!(\lambda-\mu)^{N-2}exp\left((\lambda-\mu)\sum_{n=2}^{N-1}x_{n+1}\right)(1-\frac{\mu}{\lambda})^N\prod_{n=2}^{N}\frac{1}{(exp((\lambda-\mu)x_n)-a)^2}
+lik=(N-1)!\lambda^{N-2}\left\{ \prod_{i=3}^{N}P(t_i,T) \right\}(1-u_{x_2})^2\prod_{i=3}^{N}(1-u_{x_i})
+$$\
+In addition to $t_i$, we see several new variables. $T$ represents the present, $N$ is the total number of lineages in the phylogeny, and $(1-u_{x_i})$ is the probability of a single lineage after an amount of time $x_i$.
+
+This equation is powerful, but in our case it would likely be more useful to use a different derivation of the likelihood, also found in Nee et al. (1994):
+
+$$
+lik=(N-1)!(\lambda-\mu)^{N-2}exp\left((\lambda-\mu)\sum_{n=2}^{N-1}x_{n+1}\right)(1-\frac{\mu}{\lambda})^N\prod_{n=2}^{N}\frac{1}{(exp((\lambda-\mu)x_n)-\frac{\mu}{\lambda})^2}
 $$
 
-Don't worry, we're not going to go through this whole equation! That being said, it's worthwhile to look further into some of the components that make it up.
+Don't worry, we're not going to go through the whole thing! This equation is longer, but it also contains more familiar components that may be easier to understand conceptually.
 
-$λ$ and $µ$ are familiar–we used them earlier, and, as we'll see, they're the two parameters taken by the diversitree likelihood function. Apart from those, there are two other variables that we haven't seen before: $N$ and $x_n$. $N$ is the total number of lineages in the phylogeny, while $x_n$ represents the length of time between the present and the birth of the $n$th lineage. We'll delve a bit further into how these variables come together, but first let's actually make our likelihood function. The function to create it is `make.bd()` .
+$λ$ and $µ$ are recognizable–we used them earlier, and, as we'll see, they're the two parameters taken by the diversitree likelihood function. We also saw $N$ in the earlier equation–remember, it's the total number of lineages in the phylogeny. Apart from those, there is only one other variable that we haven't seen before: $x_n$. It represents the length of time between the present and the birth of the $n$th lineage. We'll delve a bit further into how these variables come together, but first let's actually make our likelihood function. The function to create it in diversitree is `make.bd()` .
 
 ```{r}
 lik <- make.bd(phylo) # notice that the function is based on our model created above. That model had a seed set for it, so we can expect consistent values for "lik" as well.
@@ -147,9 +162,7 @@ lik(c(0.1, 0.03))
 
 #### Challenge 2
 
-Why does the likelihood function take $λ$ and $µ$ as inputs, but not $N$ and $x_n$?
-
-*Hint:* *what inputs did it take make the function in the first place?*
+We're going to take a break from coding for a moment, and check in on our conceptual understanding. Given the likelihood equation we saw above, why does the function take $λ$ and $µ$ as inputs, but not $N$ and $x_n$?
 
 ::: {.callout-tip collapse="true"}
 ## Solution
