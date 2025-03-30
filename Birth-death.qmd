@@ -220,14 +220,19 @@ This optimization process adjusts the parameters, beginning with the initial one
 
 The following likelihood surface plot might be helpful in giving you a rough idea of what point the algorithm might come when searching for the optimized parameters for phylo_small. You can get an idea from this plot what values we might might more or less expect when we finally perform our analysis. Plus, it's fun to look at!
 ```{r}
-lambda_vals <- seq(0.1, 0.3, length.out = 50)
-mu_vals <- seq(0.01, 0.2, length.out = 50)
-lik_matrix <- outer(lambda_vals, mu_vals, Vectorize(function(lambda, mu) lik_small(c(lambda, mu))))
+lambda_vals <- seq(0.1, 0.3, length.out = 50) # define a range for lambda values
+mu_vals <- seq(0.01, 0.2, length.out = 50) # define a range for mu values
+lik_matrix <- outer(lambda_vals, mu_vals, Vectorize(function(lambda, mu) lik_small(c(lambda, mu)))) 
+# lambda and mu "vectorize" so they can take multiple inputs (in the range of lambda_vals and mu_vals, respectively)
+#lik_small will compute the likelihood for a mu/lambda pair (which will be indicated by relative color)
 
 filled.contour(lambda_vals, mu_vals, lik_matrix,
                color.palette = colorRampPalette(c("white", "blue", "darkblue")),
                xlab = expression(lambda), ylab = expression(mu),
-               main = "Likelihood Surface for Phylo(Small) Model")
+               main = "Likelihood Surface for the Phylo-Small Model") 
+# filled.contour will give you a plot with color shading 
+# color.palette defines colors from low likelihood (white) to high liklihood (dark blue)
+# expression formats mu and lambda in mathematical notation (makes them look like the Greek symbols we know them as)
 ```
 
 Luckily, diversitree has a built-in function, find.mle, which abstracts this iterative optimization process. This allows us to find the parameters that maximize the likelihood for a certain tree very quickly. Lets take a look at how to use find.mle and other functions to perform a Maxlimum Likelihood (ML) analysis.
