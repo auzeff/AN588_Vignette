@@ -37,18 +37,6 @@ Birth-death models rely on the **memoryless** property of Markov processes, wher
 
 ![](https://d2vlcm61l7u1fs.cloudfront.net/media/d78/d784cf12-5eaf-4855-bb38-97dcc84c952a/phpItn25I.png){fig-align="center" width="420"}
 
-### **Likelihood Function in Birth-Death Models**
-
-The likelihood function of a birth-death model estimates the probability of observing a given phylogenetic tree under the assumed rates of speciation and extinction.
-
-For each branching event occurring at time ti, we define:
-
--   po(ti): Probability that a lineage goes extinct before time ti
-
--   po(ti): Probability that a lineage survives and splits by ti
-
-These functions are derived from and allow for model-fitting to empirical phylogenetic data.
-
 ### **Why Birth-Death Models Matter**
 
 #### Understanding the distribution of species and traits across is central to evolutionary biology. Birth-death models help answer questions like:
@@ -75,7 +63,7 @@ Today, we'll be exploring constant-rate birth-death modeling in...
 
 ## diversitree
 
-diversitree is a... \[insert eloquent, profound description here\]
+diversitree is an R package useful for comparative phylogenetic analyses. In particular, it focuses on diversification and character evolution. It's a powerful and very useful package, and we will only be scratching the surface of what it can do. We'd highly recommend looking further into diversitree–some of the sources in our references are excellent places to start!
 
 ```{r}
 # Loading diversitree
@@ -173,9 +161,9 @@ Making a cool tree is all well and good, but if we actually want some substantiv
 
 //saadams// Maybe we should show a smaller model of a tree as well (or have them build one) that could include species labels. That might be something people see in papers/would want to make so it might be interesting to include that as well :)
 
-## Analyzing our model
+------------------------------------------------------------------------
 
-### Likelihood functions
+## Likelihood functions
 
 First things first, we need to construct a likelihood function. The likelihood function of a birth-death model estimates the probability of observing a given phylogenetic tree under the assumed rates of speciation and extinction. It will form the backbone of both of our primary analysis methods.
 
@@ -248,9 +236,10 @@ You might be wondering how we can be sure that a set of parameters are the best 
 
 ------------------------------------------------------------------------
 
-### Maximum Likelihood Models
+## Maximum likelihood models
 
 #### Retrieving Maximum Likelihood Estimates
+
 
 Lets start by making a slight smaller version of phylo, phylo_small. The following analysis is still valid for larger models, but sometimes computers have a harder time running the following steps with bigger trees, so we're going to start simple!
 
@@ -348,7 +337,7 @@ If you find the degrees of freedom redundant here, you can also just call:
 fit_small$lnLik
 ```
 
-#### Does this model fit better than a model without extinction?
+### Does this model fit better than a model without extinction?
 
 How does our birth-death model stacks up against other modeling methods? Here, we will compare our birth-death model, which accounts for extinction, with the Yule model or the "pure birth model." 
 
@@ -382,11 +371,11 @@ Also notice that lnLik (the log likelihood) for the fit_small model is more posi
 
 ------------------------------------------------------------------------
 
-### Markov chain Monte Carlo
+## Markov chain Monte Carlo
 
 While MLE can help us estimate singular values for λ and µ, it does not mean that it is accurate. MLE gives a single "best-fit" estimate but it does not account for uncertainty. This is especially important when assessing phylogenetic trees, since they can vary in size and can be incomplete. An alternative way is to find a range of values that λ and µ have a high probability of being. This probability distribution is termed a **posterior distribution** and we can arrive to this result by performing Bayesian analysis using the **Markov chain Monte Carlo** **(MCMC)** algorithm.
 
-#### Terminology
+### Terminology
 
 Let's break down those terrifying sounding terms and get familiar with them!
 
@@ -414,13 +403,20 @@ What we have above is a simple weather model where we have 3 states: *rainy, clo
 
 Using this model, we can perform the chain part of Markov chain. This means that we can create a path or chain of events by "walking" from state to state at random. But remember! In a Markov chain, the probability of transitioning from a current state to a future state solely depends on the current state and not its history of states! Let's do a challenge to see if you understood the concept.
 
-#### Challenge X
+#### Challenge 3
 
 Taking the weather model, we tracked the weather states of 7 days beginning on a *rainy* day:
 
 `rainy -> cloudy -> rainy -> sunny -> sunny -> rainy -> rainy -> ...`
 
-What is the probability of it being a *cloudy* day on the 8th day? 0.3
+What is the probability of it being a *cloudy* day on the 8th day?
+
+::: {.callout-tip collapse="true"}
+## Solution
+
+```{0.3}
+```
+:::
 
 Let's talk about the **Monte Carlo** part of the MCMC. In essence, a **Monte Carlo Simulation** is a model that is used to predict the probability of a range of outcomes when accounting a complex situation where many random variables could influence real life outcomes. It does this by repeated random sampling. Sounds familiar right? That's cause it is very similar in concept to bootstrapping! What differs is that **Monte Carlo** simulates data from a model, while bootstrapping simply re-samples from a dataset.
 
@@ -428,7 +424,7 @@ Let's talk about the **Monte Carlo** part of the MCMC. In essence, a **Monte Car
 
 We can use this simple method to solve complex questions!
 
-#### Putting it all together
+### Putting it all together
 
 Now it’s time to merge all of these concepts to define MCMC. This algorithm is a Bayesian approach, meaning that previous assumptions are important to how the new data will be interpreted. The algorithm works by repeatedly proposing random parameter values and evaluating how well they fit the data (using likelihoods and priors, if provided). It then decides whether to accept or reject them using the **Metropolis-Hastings algorithm.** This decision process works by proposing a new sample based on the current sample and then accepting or rejecting it depending on the ratio of the likelihood of the proposed value to the likelihood of the current value. As we repeat this process, due to the acceptance rule, we will slowly accumulate samples that approximate the posterior distribution. This posterior distribution in our case means the range of values our speciation rate (λ) and extinction rate(μ) parameters take.
 
