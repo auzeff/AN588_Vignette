@@ -15,17 +15,17 @@ editor: visual
 theme: journal
 ---
 
-## **Introduction to Birth-Death Modeling with diversitree**
+## Introduction to Birth-Death Modeling with diversitree
 
 ------------------------------------------------------------------------
 
-### **Overview**
+### Overview
 
 Birth-death models are critical in evolutionary biology and function to help researchers understand species diversification patterns over time. These models describe how species originate (speciation) and disappear (extinction), providing valuable insights into phylogenetic tree structures when we might not have the resources to make direct observations. In this module, we provide an overview of the **diversitree** package and its utility in conducting comparative phylogenetic analyses using the birth-death model.
 
 ------------------------------------------------------------------------
 
-### **Constant Rate Birth-Death Models**
+### Constant Rate Birth-Death Models
 
 A birth-death model is a **continuous-time Markov process** used to track changes in the number of species (or lineages) through time. It consists of two main parameters:
 
@@ -37,7 +37,7 @@ These models assume that **each event** (speciation or extinction) **follows a P
 
 ------------------------------------------------------------------------
 
-### **The Markov Process**
+### The Markov Process
 
 Birth-death models rely on the **memoryless** property of Markov processes, where the probability of a future state depends only on the present state, not past events. Think of the board game Chutes and Ladders. In this game, a player’s movement is determined solely by their current position and number on the die that they roll. 
 
@@ -45,7 +45,7 @@ Birth-death models rely on the **memoryless** property of Markov processes, wher
 
 ------------------------------------------------------------------------
 
-### **Why Birth-Death Models Matter**
+### Why Birth-Death Models Matter
 
 #### Understanding the distribution of species and traits across is central to evolutionary biology. Birth-death models help answer questions like:
 
