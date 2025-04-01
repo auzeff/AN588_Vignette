@@ -17,25 +17,33 @@ theme: journal
 
 ## **Introduction to Birth-Death Modeling with diversitree**
 
+------------------------------------------------------------------------
+
 ### **Overview**
 
 Birth-death models are critical in evolutionary biology and function to help researchers understand species diversification patterns over time. These models describe how species originate (speciation) and disappear (extinction), providing valuable insights into phylogenetic tree structures when we might not have the resources to make direct observations. In this module, we provide an overview of the **diversitree** package and its utility in conducting comparative phylogenetic analyses using the birth-death model.
+
+------------------------------------------------------------------------
 
 ### **Constant Rate Birth-Death Models**
 
 A birth-death model is a **continuous-time Markov process** used to track changes in the number of species (or lineages) through time. It consists of two main parameters:
 
--   **Speciation Rate (λ):** The rate at which new species emerge
+-   **Speciation Rate (**$\lambda$**):** The rate at which new species emerge
 
--   **Extinction Rate (µ):** The rate at which species go extinct
+-   **Extinction Rate (**$\mu$**):** The rate at which species go extinct
 
-These models assume that **each event** (speciation or extinction) **follows a Poisson process**, meaning that the time to the next event follows an **exponential distribution** with a rate of λ + μ. The probability that the next event is speciation is λ/(μ + λ), while the probability of extinction is μ/(μ + λ).
+These models assume that **each event** (speciation or extinction) **follows a Poisson process**, meaning that the time to the next event follows an **exponential distribution** with a rate of $λ + μ$. The probability that the next event is speciation is $λ/(μ + λ)$, while the probability of extinction is $μ/(μ + λ)$.
+
+------------------------------------------------------------------------
 
 ### **The Markov Process**
 
 Birth-death models rely on the **memoryless** property of Markov processes, where the probability of a future state depends only on the present state, not past events. Think of the board game Chutes and Ladders. In this game, a player’s movement is determined solely by their current position and number on the die that they roll. 
 
 ![](https://d2vlcm61l7u1fs.cloudfront.net/media/d78/d784cf12-5eaf-4855-bb38-97dcc84c952a/phpItn25I.png){fig-align="center" width="420"}
+
+------------------------------------------------------------------------
 
 ### **Why Birth-Death Models Matter**
 
@@ -55,10 +63,6 @@ Comparative phylogenetic methods, such as those implemented in **diversitree**, 
 
 -   “Origin and diversification of the California flora: re-examining classic hypotheses with molecular phylogenies”
 
-### What exactly is birth-death modeling?
-
-Today, we'll be exploring constant-rate birth-death modeling in...
-
 ------------------------------------------------------------------------
 
 ## diversitree
@@ -69,8 +73,6 @@ diversitree is an R package useful for comparative phylogenetic analyses. In par
 # Loading diversitree
 library(diversitree)
 ```
-
-Now that we have some background on our models and package, it's time to start by...
 
 ------------------------------------------------------------------------
 
@@ -97,7 +99,7 @@ summary(phylo)
 
 As we can see, our model takes the form of a list. `summary()` gives us a bit more relevant information about our tree. The labels won't be too important to us right now, but the branch length metrics can tell us something about how quickly our speciation is occurring (we'll investigate this relationship a bit further in Challenge 1).
 
-In order to actually see our tree, we need to try...
+Where's the fun of a tree that you can't see? It's time to start...
 
 ------------------------------------------------------------------------
 
@@ -107,16 +109,44 @@ In order to actually see our tree, we need to try...
 plot(phylo)
 ```
 
-We can finally see our tree, but it's a bit busy. We can make it a bit simpler using some optional commands in the plot function:
-
-```{r}
-plot(phylo, no.margin = TRUE, show.tip.label = FALSE)
-# no.margin allows our plot to take up more of the output window, while show.tip.label gets rid of the labels for our simulated 100 final species
-```
+We can finally see our tree, but it's a bit busy. Let's quickly zoom in a bit and look at the labels on the right. To do so, we'll make a much smaller tree.
 
 ------------------------------------------------------------------------
 
 #### Challenge 1
+
+Make and plot a new tree that only has ten species at the end instead of 100. If you're going to set a seed, use a number other than 1 (we'll see why in a moment).
+
+::: {.callout-tip collapse="true"}
+## Solution
+
+```{r}
+set.seed(2)
+phylo_mini <- tree.bd(c(lambda, mu), max.taxa = 10) # our tree will end up with 10 species instead of 100
+plot(phylo_mini, no.margin = TRUE)
+```
+:::
+
+We can see that the labels on the right are the ten species our model ends up with, but they aren't actually numbered 1-10. Why might that be?
+
+::: {.callout-note collapse="true"}
+## A note on seeds
+
+You may have wondered why we specified not to use `set.seed(1)` in your tree. It turns out that seed 1 actually doesn't have any extinction!
+:::
+
+------------------------------------------------------------------------
+
+The labels are all well and good for a small tree, but in the case of our original 100-species model, it's way too messy to mean anything. Luckily, we can make it a bit simpler using some optional commands in the plot function (you might have noticed one of these in our solution above).
+
+```{r}
+plot(phylo, no.margin = TRUE, show.tip.label = FALSE)
+# no.margin = TRUE allows our plot to take up more of the output window, while show.tip.label = FALSE gets rid of the labels for our simulated 100 final species
+```
+
+------------------------------------------------------------------------
+
+#### Challenge 2
 
 Make a function that takes lambda, mu, and max taxa as inputs and outputs a plot of a simulated phylogeny tree. Lambda and mu should have no default values, while max taxa should default to 100.
 
@@ -155,11 +185,7 @@ phy_plot <- function(lambda, mu, max.taxa = 100) {
 
 ------------------------------------------------------------------------
 
-Making a cool tree is all well and good, but if we actually want some substantive statistics it's time to start...
-
-------------------------------------------------------------------------
-
-//saadams// Maybe we should show a smaller model of a tree as well (or have them build one) that could include species labels. That might be something people see in papers/would want to make so it might be interesting to include that as well :)
+Making a cool tree is all well and good, but if we actually want some substantive statistics it's time to get into our analysis...
 
 ------------------------------------------------------------------------
 
@@ -202,9 +228,9 @@ lik(c(0.1, 0.03))
 
 ------------------------------------------------------------------------
 
-#### Challenge 2
+#### Challenge 3
 
-We're going to take a break from coding for a moment, and check in on our conceptual understanding. Given the likelihood equation we saw above, why does the function take $λ$ and $µ$ as inputs, but not $N$ and $x_n$?
+We're going to take a break from coding for a moment and check in again on our conceptual understanding. Given the likelihood equation we saw above, why does the function take $λ$ and $µ$ as inputs, but not $N$ and $x_n$?
 
 ::: {.callout-tip collapse="true"}
 ## Solution
@@ -220,7 +246,9 @@ One more note: when typing the function out, you may have noticed that it takes 
 lik(c(0.1, 0.03), condition.surv = FALSE)
 ```
 
-//saadams// I added this below for how we should think about likelihood functions (important for maximum likelihood stuff that follows) - let me know if you want to change this!
+------------------------------------------------------------------------
+
+### Interpreting likelihood functions
 
 ```{r}
 lik(c(0.1, 0.03))
@@ -228,20 +256,19 @@ lik(c(0.2, 0.05))
 lik(c(0.3, 0.06))
 ```
 
-How do we interpret these values? Well, sometimes you might see positive likelihood values, and sometimes negative ones - this has to do with how log-likelihood is calculated here. When lik() runs, the log-likelihood of each branch is computed, and then these small probabilities are summed to give the total log-likelihood of the tree. That is, if you have a tree with $n$ branches, each contributing a log-likelihood value, the total log-likelihood is the sum of the log-likelihoods from all $n$ branches.
+How do we interpret these values? Sometimes you might see positive likelihood values, and sometimes negative ones–this has to do with how log-likelihood is calculated here. When `lik()` runs, the log-likelihood of each branch is computed, and then these small probabilities are summed to give the total log-likelihood of the tree. That is, if you have a tree with $n$ branches, each contributing a log-likelihood value, the total log-likelihood is the sum of the log-likelihoods from all $n$ branches.
 
-When we compare these total values (the final output you see for each of the lik() functions here), we are looking for the most positive value among these results. In this case, $λ$ = 0.2 and $µ$ = 0.05 are the parameters for a model that has the largest log-likelihood for the phylo tree.
+When we compare these total values (the final output you see for each of the `lik()` functions here), we are looking for the most positive value among these results. In this case, $λ$ = 0.2 and $µ$ = 0.05 are the parameters for a model that has the largest log-likelihood for the `phylo` tree.
 
-You might be wondering how we can be sure that a set of parameters are the best fitting of all the possibilities. You can imagine that a guess and check method would take a while and not be a reasonable way to apprach the problem. Luckily for us, the power of R will allow us to do this rather efficiently! Next, we will be looking at ways to estimate the parameters for a give tree with the maximum likelihood...
+You may wonder how we can be sure that a set of parameters are the best-fitting of all the possibilities. You can imagine that a guess and check method would take a while and not be a reasonable way to approach the problem. Luckily for us, the power of R will allow us to do this rather efficiently! Next, we will be looking at ways to estimate the parameters for a give tree with the maximum likelihood...
 
 ------------------------------------------------------------------------
 
 ## Maximum likelihood models
 
-#### Retrieving Maximum Likelihood Estimates
+### Retrieving maximum likelihood estimates
 
-
-Lets start by making a slight smaller version of phylo, phylo_small. The following analysis is still valid for larger models, but sometimes computers have a harder time running the following steps with bigger trees, so we're going to start simple!
+Lets start by making a slight smaller version of `phylo`, `phylo_small`. The following analysis is still valid for larger models, but sometimes computers have a harder time running the following steps with bigger trees, so we're going to start simple!
 
 ```{r}
 set.seed(3)
@@ -253,13 +280,13 @@ lik_small <- make.bd(phylo_small) # define our likelihood function for phylo_sma
 plot(phylo_small, no.margin = TRUE, show.tip.label = FALSE) # plot our new tree (a bit more easy to work with now!)
 ```
 
-Given the tree phylo_small, we're going to use Maximum Likelihood Estimation (MLE) to estimate the parameters ($λ$ and $µ$) with values that maximize the probability of observing our phylo_small tree.
+Given the tree `phylo_small`, we're going to use Maximum Likelihood Estimation (MLE) to estimate the parameters ($λ$ and $µ$) with values that maximize the probability of observing our `phylo_small` tree.
 
-Earlier, we showed how we can compare the likelihood function for different parameter inputs in order to assess how well those given parameter values maximize the likelihood of observing the phylo data. We could make an algorithm that searches for those parameter values that maximize this likelihood score for phylo_small. This function would iteratively adjust the parameters in search of values that minimize the negative log-likelihood - which translates to maximizing the likelihood if you recall how log values work!
+Earlier, we showed how we could compare likelihood functions with different parameter values inputted in order to assess how well those given parameter value maximize the likelihood of observing the `phylo` data. We could make an algorithm that searches for the parameter values that maximize this likelihood score for `phylo_small`. This function would would iteratively adjust parameters in search of values that minimize the negative log-likelihood (which translates to maximizing the likelihood if you recall how log values work!)
 
-This optimization process adjusts parameters, beginning with the initial ones we provide, and then continuously updates the parameters in order to "improve" the likelihood. This process eventually converges on a final solution, which is the output we get in the form of a set of parameters. The process ceases (or "converges") when adjustments to the parameters no longer change/improve the likelihood significantly.
+This optimization process adjusts the parameters, beginning with the initial ones we provide, and then continuously updates the parameters in order to "improve" the likelihood. This process eventually converges on a final solution, which is the output we get in the form of a set of parameters. The process ceases (or "converges") when adjustments to the parameters no longer change/improve the likelihood significantly.
 
-The following likelihood surface plot gives a rough sketch of which parameter values the algorithm may converge on when searching for the optimized parameters for modeling phylo_small. From this plot, you can get an idea of which values we might more or less expect to get from the algorithm when we finally perform our analysis. Plus, it's fun to look at!
+The following likelihood surface plot might be helpful in giving you a rough idea of what point the algorithm might come when searching for the optimized parameters for phylo_small. You can get an idea from this plot what values we might might more or less expect when we finally perform our analysis. Plus, it's fun to look at!
 
 ```{r}
 lambda_vals <- seq(0.1, 0.3, length.out = 50) # define a range for lambda values
@@ -268,28 +295,28 @@ lik_matrix <- outer(lambda_vals, mu_vals, Vectorize(function(lambda, mu) lik_sma
 # lambda and mu "vectorize" so they can take multiple inputs (in the range of lambda_vals and mu_vals, respectively)
 #lik_small will compute the likelihood for a mu/lambda pair (which will be indicated by relative color)
 
-surface_plot <- filled.contour(lambda_vals, mu_vals, lik_matrix,
+filled.contour(lambda_vals, mu_vals, lik_matrix,
                color.palette = colorRampPalette(c("white", "blue", "darkblue")),
                xlab = expression(lambda), ylab = expression(mu),
                main = "Likelihood Surface for the Phylo-Small Model") 
 # filled.contour will give you a plot with color shading 
 # color.palette defines colors from low likelihood (white) to high liklihood (dark blue)
 # expression formats mu and lambda in mathematical notation (makes them look like the Greek symbols we know them as)
-
-surface_plot # see plot
 ```
 
-Luckily, diversitree has a built-in function, find.mle, which abstracts this iterative optimization process. This allows us to find the parameters that maximize the likelihood for a certain tree very quickly. Let's take a look at how to use find.mle and other functions to perform a Maxlimum Likelihood (ML) analysis.
+Luckily, diversitree has a built-in function, find.mle, which abstracts this iterative optimization process. This allows us to find the parameters that maximize the likelihood for a certain tree very quickly. Lets take a look at how to use find.mle and other functions to perform a Maximum Likelihood (ML) analysis.
 
-(1) Define our initial values
+#### **1. Define our initial values**
 
-Defining good initial values, from which the algorithm will start, can help the optimization process run a bit better by speeding up convergence and avoiding local minima (which you can sometimes get stuck out). If the initial values are too far away from the true values, the optimization fails or gives unreliable results. So how do you decide good initial values? Typically, researchers won't know the speciation and extinction rates (0.2 and 0.05 respectively) like we do. There is no "right" way to go about defining these initial values, and there are plenty of methods that have been developed to decide this a bit more systematically. Often, it is the case that ecologists, by virtue of study and lot of time spent observing species and doing various analyses, have a pretty good idea of plausible starting points. Our initial guesses for lambda and mu will be 0.1 and 0.05, respectively. Since we have a pretty good idea of what these true values are already (given that we were the ones that defined them), we'll start off with a guess a slightly farther from the truth, while still being reasonable.
+Good initial values can help the optimization process run a bit better by helping the optimization algorithm converge faster and avoid getting stuck around local minima. If the initial values are far away from the true values, the optimization often fails or gives unreliable results. So how do you decide a good initial values? Usually, researchers won't know the speciation and extinction rates (0.2 and 0.05 respectively) like we do. There is no "right" way to go about defining these initial values, and there are plenty of ways being developed to decide this a bit more systematically. Often, it is the case that ecologists, by virtue of study and lot of time spent observing species and doing various analyses, have a pretty good idea of plausible starting points. Our initial guesses for lambda and mu, from which the algorithm will continue from, will be 0.15 and 0.01, respectively. Since we have a pretty good idea of what these true values are already (given that we were the ones that defined them), we'll start off with a guess a little far from the truth.
 
 ```{r}
 initial_values <- c(0.1, 0.05) # 0.1 = initial guess for lambda, 0.05 = initial guess for mu
 ```
 
-(2) Fitting our Maximum Likelihood model
+------------------------------------------------------------------------
+
+#### **2. Fitting our Maximum Likelihood model**
 
 ```{r}
 fit_small <- find.mle(lik_small, initial_values, method = "subplex", control = list(maxit = 10000)) 
@@ -297,9 +324,11 @@ fit_small <- find.mle(lik_small, initial_values, method = "subplex", control = l
 
 The default method for birth-death models is "nlm" (non-linear minimization), but other methods like "subplex" can be used for more complex trees (though sometimes this method is slower). If you find that the default isn't working, you can try a different method (like subplex), as we did here. The landscape of an evolutionary tree is a little complex, so we have used subplex for our demonstration.
 
-control = list(maxit = 10000) is a voluntary additional setting. Here, we say that 10,000 is the maximum number of iterations that this algorithm will be allow to perform. If the optimization doesn't converge within 10,000 iterations, then a warning will be issued and find.mle will stop running. Increasing the number of iterations with maxit gives the optimizer more chances to find the best parameter values.
+control = list(maxit = 10000) is a voluntary additional setting. 10,000 is the maximum number of iterations that this algorithm will be allow to perform. If the optimization doesn't converge within 10,000 iterations, then a warning will be issued and it will stop running. Increasing the number of iterations with maxit gives the optimizer more chances to find the best parameter values.
 
-(3) Extract coefficients from the fitted model
+------------------------------------------------------------------------
+
+#### **3. Extract coefficients from the fitted model**
 
 ```{r}
 coef(fit_small)
@@ -307,7 +336,7 @@ coef(fit_small)
 
 Now we have our fitted $λ$ and $µ$! Notice that these values are pretty close to $λ$ = 0.2 and $µ$ = 0.1 (which we know to be the true values).
 
-Let's use logLik to extract the log-likelihood for the Maximum Likelihood (ML) point from our fitted model.
+Let's use `logLik` to extract the log-likelihood for the Maximum Likelihood (ML) point from our fitted model!
 
 ```{r}
 logLik(fit_small)
@@ -325,11 +354,11 @@ So they're the same (as we would expect)! logLik is just a special command we ca
 
 Depending on your fitted model, you may be seeing a negative number and wondering why that is. It's important to remember that the likelihood functions do not always (or even often) return positive values. 18.47938 is the highest (as in the least negative/most positive) likelihood value for this run of the algorithm, but you may find that your likelihood value is different.
 
-**note:** df = 2 refers to the degrees of freedom. In this context, it really indicates the number of free parameters being estimated for the fitted model. In the case of the birth-death model, the parameters being estimated are:
-: $λ$ (speciation/birth rate) 
-: $µ$ (extinction/death rate)
+*note: df = 2 refers to the degrees of freedom. In this context, it really indicates the number of free parameters being estimated for the fitted model. In the case of the birth-death model, the parameters being estimated are:*
 
-Since there are 2 estimated parameters, df is equal to 2.
+$λ$ (speciation/birth rate) $µ$ (extinction/death rate)
+
+Since there are 2 estimated parameters, df is equal to 2
 
 If you find the degrees of freedom redundant here, you can also just call:
 
@@ -337,11 +366,11 @@ If you find the degrees of freedom redundant here, you can also just call:
 fit_small$lnLik
 ```
 
+------------------------------------------------------------------------
+
 ### Does this model fit better than a model without extinction?
 
-How does our birth-death model stacks up against other modeling methods? Here, we will compare our birth-death model, which accounts for extinction, with the Yule model or the "pure birth model." 
-
-The Yule model assumes $mu$ = 0.
+The Yule model ("pure birth" model) assumes $mu$ = 0.
 
 ```{r}
 lik.yule <- constrain(lik_small, mu ~ 0) # pure birth model (Yule) where the extinction rate = 0
@@ -353,27 +382,23 @@ fit_yule <- find.mle(lik.yule, coef(fit_small)[1], "subplex", control = list(max
 fit_yule
 ```
 
-Could adding an extinction component be a bad thing? 
-
-Well, when you add more complexity to your model, you do run the risk of creating conditions that are not that useful when you try to use the model under for other circumstances. It's important to assess whether adding another parameter (death/extinction here) improves the model's accuracy significantly. We'll do this with a **likelihood ratio test**.
-
-Let's use an ANOVA test to perform a **likelihood ratio test**:
+Now, we'll use an ANOVA test to perform a likelihood ratio test:
 
 ```{r}
 anova(fit_small, fit_yule)
 ```
 
-A lower AIC (Akaike Information Criterion) indicates that the "full" model (fit_small) fits the data better than the Yule model (see significance codes for significance level). Briefly, in model selection AIC penalizes models that have a higher level of complexity (i.e. more parameters). Despite being more complex, the full model still fits the phylo_small tree better. Sometimes the trade-off between complexity and fit will favor the simpler model (the Yule model) over the more complex one (the birth-death model). In fact, some you might see this result.
+A lower AIC (Akaike Information Criterion) indicates that the "full" model (fit_small) fits the data better than the Yule model (see significance codes for significance level). Briefly, in model selection AIC penalizes models that have a higher level of complexity (i.e. more parameters). Despite being more complex, the full model still fits the `phylo_small` tree better. Sometimes the tradeoff between complexity and fit will favor the simpler model (the Yule model). In fact, some you might see this result.
 
-Also notice that lnLik (the log likelihood) for the fit_small model is more positive than fit_yule. The AIC itself is based on the likelihood of the model so this should be expected. That is, the favorable model should have a higher likelihood value and a lower AIC. 
-
-**note:** the AIC value is contextual and has no real meaning here outside of its utility for comparing the two models.
+Also notice that the `lnLik` (the log likelihood) for the `fit_small` is more positive than `fit_yule`. The AIC itself is based on the likelihood of the model so this should be expected. That is, the favorable model should have a higher likelihood value and a lower AIC.
 
 ------------------------------------------------------------------------
 
 ## Markov chain Monte Carlo
 
 While MLE can help us estimate singular values for λ and µ, it does not mean that it is accurate. MLE gives a single "best-fit" estimate but it does not account for uncertainty. This is especially important when assessing phylogenetic trees, since they can vary in size and can be incomplete. An alternative way is to find a range of values that λ and µ have a high probability of being. This probability distribution is termed a **posterior distribution** and we can arrive to this result by performing Bayesian analysis using the **Markov chain Monte Carlo** **(MCMC)** algorithm.
+
+------------------------------------------------------------------------
 
 ### Terminology
 
@@ -403,7 +428,9 @@ What we have above is a simple weather model where we have 3 states: *rainy, clo
 
 Using this model, we can perform the chain part of Markov chain. This means that we can create a path or chain of events by "walking" from state to state at random. But remember! In a Markov chain, the probability of transitioning from a current state to a future state solely depends on the current state and not its history of states! Let's do a challenge to see if you understood the concept.
 
-#### Challenge 3
+------------------------------------------------------------------------
+
+#### Challenge 4
 
 Taking the weather model, we tracked the weather states of 7 days beginning on a *rainy* day:
 
@@ -414,9 +441,10 @@ What is the probability of it being a *cloudy* day on the 8th day?
 ::: {.callout-tip collapse="true"}
 ## Solution
 
-```{0.3}
-```
+`0.3`
 :::
+
+------------------------------------------------------------------------
 
 Let's talk about the **Monte Carlo** part of the MCMC. In essence, a **Monte Carlo Simulation** is a model that is used to predict the probability of a range of outcomes when accounting a complex situation where many random variables could influence real life outcomes. It does this by repeated random sampling. Sounds familiar right? That's cause it is very similar in concept to bootstrapping! What differs is that **Monte Carlo** simulates data from a model, while bootstrapping simply re-samples from a dataset.
 
@@ -424,9 +452,11 @@ Let's talk about the **Monte Carlo** part of the MCMC. In essence, a **Monte Car
 
 We can use this simple method to solve complex questions!
 
+------------------------------------------------------------------------
+
 ### Putting it all together
 
-Now it’s time to merge all of these concepts to define MCMC. This algorithm is a Bayesian approach, meaning that previous assumptions are important to how the new data will be interpreted. The algorithm works by repeatedly proposing random parameter values and evaluating how well they fit the data (using likelihoods and priors, if provided). It then decides whether to accept or reject them using the **Metropolis-Hastings algorithm.** This decision process works by proposing a new sample based on the current sample and then accepting or rejecting it depending on the ratio of the likelihood of the proposed value to the likelihood of the current value. As we repeat this process, due to the acceptance rule, we will slowly accumulate samples that approximate the posterior distribution. This posterior distribution in our case means the range of values our speciation rate (λ) and extinction rate(μ) parameters take.
+Now it’s time to merge all of these concepts to define MCMC. This algorithm is a Bayesian approach, meaning that previous assumptions are important to how the new data will be interpreted. The algorithm works by repeatedly proposing random parameter values and evaluating how well they fit the data (using likelihoods and priors, if provided). It then decides whether to accept or reject them using the **Metropolis-Hastings algorithm.** This decision process works by proposing a new sample based on the current sample and then accepting or rejecting it depending on the ratio of the likelihood of the proposed value to the likelihood of the current value. As we repeat this process, due to the acceptance rule, we will slowly accumulate samples that approximate the posterior distribution. This posterior distribution in our case means the range of values our speciation rate ($λ$) and extinction rate ($\mu$) parameters take.
 
 Enough textbook info and let's see step by step how the algorithm works!
 
@@ -487,7 +517,7 @@ r <- exp(log_r)
 r
 ```
 
-The `r` value we received is extremely low, meaning that the propsed parameters performed worse than the current parameters. One could automatically discard them, but sometimes these worse values have a place in the final distribution of values. To decide on this, we can write this little conditional:
+The `r` value we received is extremely low, meaning that the proposed parameters performed worse than the current parameters. One could automatically discard them, but sometimes these worse values have a place in the final distribution of values. To decide on this, we can write this little conditional:
 
 ```{r}
 set.seed(1)
@@ -610,15 +640,3 @@ abline(v=c(0.1, 0.03, 0.07), col = col, lty = 2)
 ```
 
 We can see that both plots are basically identical!
-
-## Sources
-
-<https://www.stata.com/support/faqs/statistics/convergence-of-maximum-likelihood-estimators/>
-<https://medium.com/@abhaysingh71711/maximum-likelihood-estimation-the-key-to-model-optimization-6b5f95b191d1>
-<https://rdrr.io/cran/diversitree/man/find.mle.html>
-<https://www.rdocumentation.org/packages/stats/versions/3.6.2/topics/nlm>
-<https://bio.libretexts.org/Bookshelves/Evolutionary_Developmental_Biology/Phylogenetic_Comparative_Methods_(Harmon)/11%3A_Fitting_Birth-Death_Models/11.02%3A_Clade_Age_and_Diversity>
-<https://blogs.sas.com/content/iml/2014/06/11/initial-guess-for-optimization.html>
-<https://www.rdocumentation.org/packages/graphics/versions/3.6.2/topics/filled.contour>
-<https://api.rpubs.com/tomanderson_34/lrt#:~:text=Likelihood%20Ratio%20Tests&text=The%20LRT%20compares%20two%20hierarchically,your%20model%20significantly%20more%20accurate>
-<https://www.pico.net/kb/overfitting-variance-bias-and-model-complexity-in-machine-learning/#:~:text=However%2C%20a%20model%20that%20is,it%20tries%20to%20use%20them>
