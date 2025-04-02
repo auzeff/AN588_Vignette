@@ -47,7 +47,7 @@ Birth-death models rely on the **memoryless** property of Markov processes, wher
 
 ### Why Birth-Death Models Matter
 
-#### Understanding the distribution of species and traits across is central to evolutionary biology. Birth-death models help answer questions like:
+**Understanding the distribution of species and traits across is central to evolutionary biology. Birth-death models help answer questions like:**
 
 -   Why do some clades have more species than others?
 
@@ -78,7 +78,7 @@ library(diversitree)
 
 ## Making a model
 
-The two parameters for a simple constant-rate birth-death model are $λ$ and $µ$. λ represents the speciation rate in our simulated phylogeny, while µ represents the extinction rate. We'll start by making a tree using these parameters, as well as the maximum number of species ("max.taxa = ") we'd like our model to diversity to.
+The two parameters for a simple constant-rate birth-death model are $λ$ and $µ$. $λ$ represents the speciation rate in our simulated phylogeny, while $µ$ represents the extinction rate. We'll start by making a tree using these parameters, as well as the maximum number of species (`max.taxa = ...` ) we'd like our model to diversify to.
 
 ```{r}
 # Defining our parameters
@@ -97,13 +97,15 @@ str(phylo)
 summary(phylo)
 ```
 
-As we can see, our model takes the form of a list. `summary()` gives us a bit more relevant information about our tree. The labels won't be too important to us right now, but the branch length metrics can tell us something about how quickly our speciation is occurring (we'll investigate this relationship a bit further in Challenge 1).
+As we can see, our model takes the form of a list. `summary()` gives us a bit more relevant information about our tree. The labels won't be too important for our analysis today, but the branch length metrics can tell us something about how quickly our speciation is occurring (we'll investigate this relationship a bit further in Challenge 2).
 
 Where's the fun of a tree that you can't see? It's time to start...
 
 ------------------------------------------------------------------------
 
 ## Plotting our model
+
+Plotting a tree is as simple as sticking it into the `plot()` function:
 
 ```{r}
 plot(phylo)
@@ -132,12 +134,12 @@ We can see that the labels on the right are the ten species our model ends up wi
 ::: {.callout-note collapse="true"}
 ## A note on seeds
 
-You may have wondered why we specified not to use `set.seed(1)` in your tree. It turns out that seed 1 actually doesn't have any extinction!
+You may have wondered why we specified not to use `set.seed(1)` in your tree. It turns out that seed 1 actually doesn't have any extinction! What are the chances of that ? (we're not actually asking you to calculate it)
 :::
 
 ------------------------------------------------------------------------
 
-The labels are all well and good for a small tree, but in the case of our original 100-species model, it's way too messy to mean anything. Luckily, we can make it a bit simpler using some optional commands in the plot function (you might have noticed one of these in our solution above).
+The labels are all well and good for a small tree, but in the case of our original 100-species model, it's way too messy to mean anything. Luckily, we can make it a bit simpler using some optional commands in the plot function (you may have noticed one of these in our solution above).
 
 ```{r}
 plot(phylo, no.margin = TRUE, show.tip.label = FALSE)
@@ -148,7 +150,7 @@ plot(phylo, no.margin = TRUE, show.tip.label = FALSE)
 
 #### Challenge 2
 
-Make a function that takes lambda, mu, and max taxa as inputs and outputs a plot of a simulated phylogeny tree. Lambda and mu should have no default values, while max taxa should default to 100.
+Make a function that takes **lambda**, **mu**, and **max taxa** as inputs and outputs a plot of a simulated phylogeny tree. Lambda and mu should have no default values, while max taxa should default to 100.
 
 ::: {.callout-tip collapse="true"}
 ## Solution
@@ -204,9 +206,9 @@ These functions are derived from and allow for model-fitting to empirical phylog
 $$
 lik=(N-1)!\lambda^{N-2}\left\{ \prod_{i=3}^{N}P(t_i,T) \right\}(1-u_{x_2})^2\prod_{i=3}^{N}(1-u_{x_i})
 $$\
-In addition to $t_i$, we see several new variables. $T$ represents the present, $N$ is the total number of lineages in the phylogeny, and $(1-u_{x_i})$ is the probability of a single lineage after an amount of time $x_i$.
+In addition to $t_i$, we see several new variables. $T$ represents the present time, $N$ is the total number of lineages in the phylogeny, and $(1-u_{x_i})$ is the probability of a single lineage after an amount of time $x_i$.
 
-This equation is powerful, but in our case it would likely be more useful to use a different derivation of the likelihood, also found in Nee et al. (1994):
+This equation is useful, but in our case it would likely be more helpful to see a different derivation of the likelihood, also found in Nee et al. (1994):
 
 $$
 lik=(N-1)!(\lambda-\mu)^{N-2}exp\left((\lambda-\mu)\sum_{n=2}^{N-1}x_{n+1}\right)(1-\frac{\mu}{\lambda})^N\prod_{n=2}^{N}\frac{1}{(exp((\lambda-\mu)x_n)-\frac{\mu}{\lambda})^2}
@@ -240,7 +242,7 @@ Remember that $N$ and $x_n$ are both defined in our tree that we're basing the l
 
 ------------------------------------------------------------------------
 
-One more note: when typing the function out, you may have noticed that it takes another argument, called *condition.surv*. This argument, which is on by default, dictates whether the likelihood is conditional on two lineages surviving to the present. As we can see, turning it off changes the likelihood (we won't get into the math behind that here).
+One more note: when typing the function out, you may have noticed that it takes another argument, called `condition.surv`. This argument, which is on by default, dictates whether the likelihood is conditional on two lineages surviving to the present. As we can see, turning it off changes the likelihood (we won't get into the math behind that here).
 
 ```{r}
 lik(c(0.1, 0.03), condition.surv = FALSE)
@@ -250,13 +252,17 @@ lik(c(0.1, 0.03), condition.surv = FALSE)
 
 ### Interpreting likelihood functions
 
+We can run all sorts of different parameters in our likelihood function, but the meaning of the outputs isn't necessarily immediately obvious. Let's try a few different $λ$ and $µ$ combinations:
+
 ```{r}
 lik(c(0.1, 0.03))
 lik(c(0.2, 0.05))
 lik(c(0.3, 0.06))
 ```
 
-How do we interpret these values? Sometimes you might see positive likelihood values, and sometimes negative ones–this has to do with how log-likelihood is calculated here. When `lik()` runs, the log-likelihood of each branch is computed, and then these small probabilities are summed to give the total log-likelihood of the tree. That is, if you have a tree with $n$ branches, each contributing a log-likelihood value, the total log-likelihood is the sum of the log-likelihoods from all $n$ branches.
+How do we interpret these values?
+
+While all of these likelihood values are positive, they can also be negative–this has to do with how log-likelihood is calculated here. When `lik()` runs, the log-likelihood of each branch is computed, and then these small probabilities are summed to give the total log-likelihood of the tree. That is, if you have a tree with $n$ branches, each contributing a log-likelihood value, the total log-likelihood is the sum of the log-likelihoods from all $n$ branches.
 
 When we compare these total values (the final output you see for each of the `lik()` functions here), we are looking for the most positive value among these results. In this case, $λ$ = 0.2 and $µ$ = 0.05 are the parameters for a model that has the largest log-likelihood for the `phylo` tree.
 
@@ -286,7 +292,7 @@ Earlier, we showed how we could compare likelihood functions with different para
 
 This optimization process adjusts the parameters, beginning with the initial ones we provide, and then continuously updates the parameters in order to "improve" the likelihood. This process eventually converges on a final solution, which is the output we get in the form of a set of parameters. The process ceases (or "converges") when adjustments to the parameters no longer change/improve the likelihood significantly.
 
-The following likelihood surface plot might be helpful in giving you a rough idea of what point the algorithm might come when searching for the optimized parameters for phylo_small. You can get an idea from this plot what values we might might more or less expect when we finally perform our analysis. Plus, it's fun to look at!
+The following likelihood surface plot might be helpful in giving you a rough idea of what point the algorithm might come when searching for the optimized parameters for `phylo_small`. You can get an idea from this plot what values we might might more or less expect when we finally perform our analysis. Plus, it's fun to look at!
 
 ```{r}
 lambda_vals <- seq(0.1, 0.3, length.out = 50) # define a range for lambda values
@@ -304,7 +310,7 @@ filled.contour(lambda_vals, mu_vals, lik_matrix,
 # expression formats mu and lambda in mathematical notation (makes them look like the Greek symbols we know them as)
 ```
 
-Luckily, diversitree has a built-in function, find.mle, which abstracts this iterative optimization process. This allows us to find the parameters that maximize the likelihood for a certain tree very quickly. Lets take a look at how to use find.mle and other functions to perform a Maximum Likelihood (ML) analysis.
+Luckily, diversitree has a built-in function, `find.mle`, which abstracts this iterative optimization process. This allows us to find the parameters that maximize the likelihood for a certain tree very quickly. Lets take a look at how to use `find.mle` and other functions to perform a Maximum Likelihood (ML) analysis.
 
 #### **1. Define our initial values**
 
@@ -324,7 +330,7 @@ fit_small <- find.mle(lik_small, initial_values, method = "subplex", control = l
 
 The default method for birth-death models is "nlm" (non-linear minimization), but other methods like "subplex" can be used for more complex trees (though sometimes this method is slower). If you find that the default isn't working, you can try a different method (like subplex), as we did here. The landscape of an evolutionary tree is a little complex, so we have used subplex for our demonstration.
 
-control = list(maxit = 10000) is a voluntary additional setting. 10,000 is the maximum number of iterations that this algorithm will be allow to perform. If the optimization doesn't converge within 10,000 iterations, then a warning will be issued and it will stop running. Increasing the number of iterations with maxit gives the optimizer more chances to find the best parameter values.
+`control = list(maxit = 10000)` is a voluntary additional setting. 10,000 is the maximum number of iterations that this algorithm will be allow to perform. If the optimization doesn't converge within 10,000 iterations, then a warning will be issued and it will stop running. Increasing the number of iterations with `maxit` gives the optimizer more chances to find the best parameter values.
 
 ------------------------------------------------------------------------
 
@@ -350,15 +356,11 @@ By the way, this is the same as calculating the likelihood function for any para
 lik_small(coef(fit_small))
 ```
 
-So they're the same (as we would expect)! logLik is just a special command we can use here that works with the MLE model results. But, by being associated with a specific model here, logLik doesn't just give you the likelihood of parameters you manually input (as lik() or lik_small() do), it ALSO evaluates how well the MLE-fitted model (fit_small) works for modeling the phylo_small tree with these optimized parameters.
+So they're the same (as we would expect)! `logLik` is just a special command we can use here that works with the MLE model results. But, by being associated with a specific model here, `logLik` doesn't just give you the likelihood of parameters you manually input (as `lik()` or `lik_small()` do), it ALSO evaluates how well the MLE-fitted model (`fit_small`) works for modeling the `phylo_small` tree with these optimized parameters.
 
 Depending on your fitted model, you may be seeing a negative number and wondering why that is. It's important to remember that the likelihood functions do not always (or even often) return positive values. 18.47938 is the highest (as in the least negative/most positive) likelihood value for this run of the algorithm, but you may find that your likelihood value is different.
 
-*note: df = 2 refers to the degrees of freedom. In this context, it really indicates the number of free parameters being estimated for the fitted model. In the case of the birth-death model, the parameters being estimated are:*
-
-$λ$ (speciation/birth rate) $µ$ (extinction/death rate)
-
-Since there are 2 estimated parameters, df is equal to 2
+*note: df = 2 refers to the degrees of freedom. In this context, it really indicates the number of free parameters being estimated for the fitted model. In the case of the birth-death model, the parameters being estimated are* $\lambda$ and $\mu$. *Since there are 2 estimated parameters, df is equal to 2*
 
 If you find the degrees of freedom redundant here, you can also just call:
 
@@ -396,7 +398,7 @@ Also notice that the `lnLik` (the log likelihood) for the `fit_small` is more po
 
 ## Markov chain Monte Carlo
 
-While MLE can help us estimate singular values for λ and µ, it does not mean that it is accurate. MLE gives a single "best-fit" estimate but it does not account for uncertainty. This is especially important when assessing phylogenetic trees, since they can vary in size and can be incomplete. An alternative way is to find a range of values that λ and µ have a high probability of being. This probability distribution is termed a **posterior distribution** and we can arrive to this result by performing Bayesian analysis using the **Markov chain Monte Carlo** **(MCMC)** algorithm.
+While MLE can help us estimate singular values for $λ$ and $µ$, it does not mean that it is accurate. MLE gives a single "best-fit" estimate but it does not account for uncertainty. This is especially important when assessing phylogenetic trees, since they can vary in size and can be incomplete. An alternative way is to find a range of values that $λ$ and $µ$ have a high probability of being. This probability distribution is termed a **posterior distribution** and we can arrive to this result by performing Bayesian analysis using the **Markov chain Monte Carlo** **(MCMC)** algorithm.
 
 ------------------------------------------------------------------------
 
@@ -406,7 +408,7 @@ Let's break down those terrifying sounding terms and get familiar with them!
 
 The reason we want to employ **Bayesian** analysis on this is because this algorithm will use previous assumptions and the data available to us (likelihood function derived from phylogenetic tree) to arrive at our desired **posterior distribution**.
 
-Previous assumptions are characterized as a **prior distribution** representing existing knowledge or assumptions about model parameters before observing the data. These distributions are probability distributions (e.g., uniform, exponential, normal) that mark the possible ranges for parameters which in our case are speciation (λ) and extinction (μ) rates.
+Previous assumptions are characterized as a **prior distribution** representing existing knowledge or assumptions about model parameters before observing the data. These distributions are probability distributions (e.g., uniform, exponential, normal) that mark the possible ranges for parameters which in our case are speciation ($\lambda$) and extinction ($\mu$) rates.
 
 These prior probability distributions affect our posterior distribution. For example, if we had an exponential prior distribution on our parameters, then even if our new data offers much higher values, the model will emphasize our parameters to lie on the lower end but can still permit higher values if the data supports it more. If we don't have very informative prior information, we can assume the prior distribution to be uniform, letting our new data have more say in parameter inference.
 
@@ -468,7 +470,7 @@ phy <- tree.bd(c(.1,.03), max.taxa = 100) # simulate phylogenetic tree
 lik <- make.bd(phy) # create likelihood function based on simulated tree
 ```
 
-We can make our initial guesses of λ and μ based on the results from MLE!
+We can make our initial guesses of $λ$ and $μ$ based on the results from MLE!
 
 ```{r}
 fit <- find.mle(lik, c(0.1, 0.03), method = "subplex")
@@ -539,7 +541,7 @@ We can see that in this case, the proposed value was rejected:
 current_lik
 ```
 
-If repeat this process many many times, essentially creating a "random walk" along the parameter space, we will eventually get the posterior distribution!
+If we repeat this process many many times, essentially creating a "random walk" along the parameter space, we will eventually get the posterior distribution!
 
 You must have noticed that when introducing the Bayesian nature of MCMC, we mentioned prior distributions and how these previous assumptions can change how the prior distribution presents itself. The prior directly shapes the posterior by increasing or decreasing the probability of visiting a particular parameter region.
 
@@ -630,7 +632,7 @@ test_mcmc <- custom_mcmc(lik, start_par, w = c(0.1, 0.1))
 head(test_mcmc)
 ```
 
-What we get is a table of our posterior distribution with our accepted λ and μ parameters and their likelihood values. We can plot this using:
+What we get is a table of our posterior distribution with our accepted $λ$ and $μ$ parameters and their likelihood values. We can plot this using:
 
 ```{r}
 # create r column based on lambda and mu
