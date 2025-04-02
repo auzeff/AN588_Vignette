@@ -539,7 +539,30 @@ We can see that in this case, the proposed value was rejected:
 current_lik
 ```
 
-We repeat this process many many times and will eventually get the posterior distribution!
+If repeat this process many many times, essentially creating a "random walk" along the parameter space, we will eventually get the posterior distribution!
+
+You must have noticed that when introducing the Bayesian nature of MCMC, we mentioned prior distributions and how these previous assumptions can change how the prior distribution presents itself. The prior directly shapes the posterior by increasing or decreasing the probability of visiting a particular parameter region.
+
+We can create a function that takes this into account. We want a function that can take in the value of both of the parameters. It then needs to get their probability based on a specific probabiliity distribution - which in our example will be a normal distribution - and multiply them to get a **joint prior**.
+
+```{r}
+prior_fn_normal <- function(par) { # par = c(lambda, mu)
+  lambda <- par[1]
+  mu <- par[2]
+  if (lambda > 0 && mu > 0 && mu < lambda) {
+    return(dnorm(lambda, mean = 0.1, sd = 0.03) * dnorm(lambda, mean = 0.03, sd = 0.02)) # Multiply these distributions to join them
+  } else {
+    return(0)  # Do not allow impossible or illogical values
+  }
+  
+}
+```
+
+This then affects the current likelihood values by:
+
+```{r}
+current_lik <- current_lik + log(prior_fn_normal(current_par))
+```
 
 To put it all together, we come up with our custom MCMC R function:
 
@@ -564,7 +587,7 @@ custom_mcmc <- function(likelihood_fn, start, nsteps = 100000, w = c(0.1, 0.1), 
   
   for (i in 2:nsteps) {
     # Propose new values for lambda and mu
-    proposal_par <- current_par + runif(2, -w, w)
+    proposal_par <- current_par + runif(2, -w, w) # Generates 2 random numbers between -w and w
     
     # Check that proposed values are positive and finite (otherwise they won't work in the likelihood function)
     if (any(proposal_par <= 0) || any(!is.finite(proposal_par))) {
@@ -640,3 +663,39 @@ abline(v=c(0.1, 0.03, 0.07), col = col, lty = 2)
 ```
 
 We can see that both plots are basically identical!
+
+#### Challenge 5
+
+Write a function that takes a pair of values and gets their probability based on an **exponential** distribution. Then plug this in into both the custom MCMC function and the one provided by `diversitree`. How does this information change the figures in the end?
+
+::: {.callout-tip collapse="true"}
+## Solution
+
+```{r}
+prior_fn_exp <- function(par) {
+  lambda <- par[1]
+  mu <- par[2]
+  
+  if (lambda > 0 && mu > 0 && mu < lambda) {
+    return(dexp(lambda, rate = 10) * dexp(mu, rate = 10))
+  } else {
+    return(0)  # Do not allow impossible or illogical values
+  }
+}
+```
+
+```{r}
+set.seed(2)
+base_mcmc_norm <- mcmc(lik, start_par, nsteps = 10000, w = 0.1, print.every = 0, prior = prior_fn_exp)
+head(base_mcmc_norm)
+```
+
+```{r}
+base_mcmc_norm$r <- base_mcmc_norm$lambda - base_mcmc_norm$mu
+col <- c("#eaab00", "#004165", "#618e02")
+profiles.plot(base_mcmc_norm[c("lambda", "mu", "r")], col.line = col, las = 1, legend.pos = "topright")
+abline(v=c(0.1, 0.03, 0.07), col = col, lty = 2)
+```
+:::
+
+------------------------------------------------------------------------
