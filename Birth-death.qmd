@@ -25,6 +25,18 @@ Birth-death models are critical in evolutionary biology and function to help res
 
 ------------------------------------------------------------------------
 
+### Objectives for this Module
+
+-   **Understand Birth-Death Modeling:** Learn the principles of constant-rate birth-death models and their application in evolutionary biology
+
+-   **Simulate Phylogenetic Trees:** Use the diversitree R package to create and visualize evolutionary trees based on speciation and extinction rates
+
+-   **Understand and Apply MLEs:** Apply Maximum Likelihood Estimation (MLE) to determine speciation and extinction rates, evaluating model fit.
+
+-   **Perform Bayesian Analysis with MCMC:** Implement Markov Chain Monte Carlo (MCMC) methods to explore posterior distributions (where each value depends only on the previous one) for model parameters
+
+---
+
 ### Constant Rate Birth-Death Models
 
 A birth-death model is a **continuous-time Markov process** used to track changes in the number of species (or lineages) through time. It consists of two main parameters:
@@ -33,7 +45,17 @@ A birth-death model is a **continuous-time Markov process** used to track change
 
 -   **Extinction Rate (**$\mu$**):** The rate at which species go extinct
 
-These models assume that **each event** (speciation or extinction) **follows a Poisson process**, meaning that the time to the next event follows an **exponential distribution** with a rate of $λ + μ$. The probability that the next event is speciation is $λ/(μ + λ)$, while the probability of extinction is $μ/(μ + λ)$.
+These models assume that **each event** (speciation or extinction) **follows a [Poisson](https://www.probabilitycourse.com/chapter11/11_1_2_basic_concepts_of_the_poisson_process.php) process**, meaning that the time to the next event follows an **exponential distribution** with a rate of $λ + μ$. The probability that the next event is speciation is $λ/(μ + λ)$, while the probability of extinction is $μ/(μ + λ)$.
+
+Poisson processes model **random events over time or space**, especially **count data** ... i.e.:
+
+-   the number of car accidents at a site or in an area
+
+-   Number of car accidents at an intersection per year
+
+-   Number of emails you get per hour
+
+![](images/Screen%20Shot%202025-04-08%20at%201.18.42%20PM.png){fig-align="center" width="567"}
 
 ------------------------------------------------------------------------
 
@@ -42,6 +64,18 @@ These models assume that **each event** (speciation or extinction) **follows a P
 Birth-death models rely on the **memoryless** property of Markov processes, where the probability of a future state depends only on the present state, not past events. Think of the board game Chutes and Ladders. In this game, a player’s movement is determined solely by their current position and number on the die that they roll. 
 
 ![](https://d2vlcm61l7u1fs.cloudfront.net/media/d78/d784cf12-5eaf-4855-bb38-97dcc84c952a/phpItn25I.png){fig-align="center" width="420"}
+
+### The Markov Chain Process
+
+Birth-death models rely on the **memoryless** property of Markov Chains, where the probability of a future state depends only on the current state, not past events/how we got there. Think of the board game Chutes and Ladders. In this game, a player’s movement is determined solely by their current position and number on the die that they roll. 
+
+![](https://d2vlcm61l7u1fs.cloudfront.net/media/d78/d784cf12-5eaf-4855-bb38-97dcc84c952a/phpItn25I.png){fig-align="center" width="420"}
+
+In this module we will focus on a specific subclass of Markov Chains:
+
+-   **Markov Chain:** A sequence where each value depends only on the previous one
+
+    -   **Markov Chain Monte Carlo (MCMC):** A method to sample from complex probability distributions by building a Markov chain whose long-term behavior matches the target distribution.
 
 ------------------------------------------------------------------------
 
@@ -705,3 +739,5 @@ abline(v=c(0.1, 0.03, 0.07), col = col, lty = 2)
 :::
 
 ------------------------------------------------------------------------
+
+Additional
