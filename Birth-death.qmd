@@ -19,7 +19,7 @@ theme: journal
 
 ------------------------------------------------------------------------
 
-### Overview 
+### Overview
 
 Birth-death models are critical in evolutionary biology and function to help researchers understand species diversification patterns over time. These models describe how species originate (speciation) and disappear (extinction), providing valuable insights into phylogenetic tree structures when we might not have the resources to make direct observations. In this module, we provide an overview of the **diversitree** package and its utility in conducting comparative phylogenetic analyses using the birth-death model.
 
@@ -105,9 +105,6 @@ Comparative phylogenetic methods, such as those implemented in **diversitree**, 
 ![](images/wolfimage.png){fig-align="center"}
 
 -   “Ecological causes of decelerating diversification in carnivoran mammals”
-
-<!-- -->
-
 -   “Origin and diversification of the California flora: re-examining classic hypotheses with molecular phylogenies”
 
 ------------------------------------------------------------------------
