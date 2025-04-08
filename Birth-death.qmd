@@ -35,7 +35,7 @@ Birth-death models are critical in evolutionary biology and function to help res
 
 -   **Perform Bayesian Analysis with MCMC:** Implement Markov Chain Monte Carlo (MCMC) methods to explore posterior distributions (where each value depends only on the previous one) for model parameters
 
----
+------------------------------------------------------------------------
 
 ### Constant Rate Birth-Death Models
 
@@ -456,7 +456,7 @@ What about MCMC? For this, we can break it down into it's two terms: **Markov ch
 
 A **Markov chain** is a stochastic model (meaning it accounts for randomness) that experiences transitions from one state to the next based on the probabilities of the current state. The easiest way to visualize this is through an image!
 
-![](images/clipboard-3179636823.png)
+![](https://media.geeksforgeeks.org/wp-content/uploads/20230503183646/Markov-Chains-in-NLP.webp)
 
 Source: [geeksforgeeks](https://www.geeksforgeeks.org/markov-chains-in-nlp/)
 
