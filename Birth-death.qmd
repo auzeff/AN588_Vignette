@@ -57,13 +57,24 @@ Poisson processes model **random events over time or space**, especially **count
 
 ![](images/Screen%20Shot%202025-04-08%20at%201.18.42%20PM.png){fig-align="center" width="567"}
 
+::: {.callout-tip collapse="true"}
+## Another Example - Rolling a Die!
+
+Let's say we have a biased 6-sided die:
+
+-   Faces 1–4 = speciation → $\lambda = 2$
+-   Faces 5–6 = extinction → $\mu = 1$
+
+How did we get here? This is purely a probability ratio — we're saying: **2/3** of events are **speciation** and **1/3** are **extinction**
+
+-   Total event rate: $\lambda + \mu = 3$
+
+-   Probability of speciation: $P(\text{speciation}) = \frac{\lambda}{\lambda + \mu} = \frac{2}{3}$
+
+-   Probability of extinction: $P(\text{extinction}) = \frac{\mu}{\lambda + \mu} = \frac{1}{3}$
+:::
+
 ------------------------------------------------------------------------
-
-### The Markov Process
-
-Birth-death models rely on the **memoryless** property of Markov processes, where the probability of a future state depends only on the present state, not past events. Think of the board game Chutes and Ladders. In this game, a player’s movement is determined solely by their current position and number on the die that they roll. 
-
-![](https://d2vlcm61l7u1fs.cloudfront.net/media/d78/d784cf12-5eaf-4855-bb38-97dcc84c952a/phpItn25I.png){fig-align="center" width="420"}
 
 ### The Markov Chain Process
 
@@ -91,9 +102,11 @@ In this module we will focus on a specific subclass of Markov Chains:
 
 Comparative phylogenetic methods, such as those implemented in **diversitree**, provide a statistical framework for testing hypotheses about species diversification and help us to understand and model diversification better when we are working with sources such as the fossil record, where chronological data on speciation or extinction may not be explicitly available. Many scientific papers also utilize **diversitree:**
 
-![](https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcR_9ovYoLmP0ADas8NUsg4jiePKLM0q1LTdBVkv_UEen9SOjirYCr-fJJNzprAo8S0epONvfSDEWvbMa_eKzwJkyg){width="271"}![](https://www.crittersquad.com/wp-content/uploads/2018/01/6670066023_99968c35e6_b.jpg){width="271"}
+![](images/wolfimage.png){fig-align="center"}
 
 -   “Ecological causes of decelerating diversification in carnivoran mammals”
+
+<!-- -->
 
 -   “Origin and diversification of the California flora: re-examining classic hypotheses with molecular phylogenies”
 
@@ -739,5 +752,3 @@ abline(v=c(0.1, 0.03, 0.07), col = col, lty = 2)
 :::
 
 ------------------------------------------------------------------------
-
-Additional
