@@ -545,7 +545,11 @@ If we repeat this process many many times, essentially creating a "random walk" 
 
 You must have noticed that when introducing the Bayesian nature of MCMC, we mentioned prior distributions and how these previous assumptions can change how the prior distribution presents itself. The prior directly shapes the posterior by increasing or decreasing the probability of visiting a particular parameter region.
 
-We can create a function that takes this into account. We want a function that can take in the value of both of the parameters. It then needs to get their probability based on a specific probabiliity distribution - which in our example will be a normal distribution - and multiply them to get a **joint prior**.
+We can create a function that takes this into account. We want a function that can take in the value of both of the parameters. It then needs to get their probability based on a specific probabiliity distribution - which in our example will be a normal distribution - and multiply them to get a **joint prior**. We can do this if we assume that λ and μ are **independent.**
+
+$$
+P(λ,μ)=P(λ)⋅P(μ)
+$$
 
 ```{r}
 prior_fn_normal <- function(par) { # par = c(lambda, mu)
@@ -563,7 +567,7 @@ prior_fn_normal <- function(par) { # par = c(lambda, mu)
 This then affects the current likelihood values by:
 
 ```{r}
-current_lik <- current_lik + log(prior_fn_normal(current_par))
+current_lik <- current_lik + log(prior_fn_normal(current_par)) # Posterior = Prior x Likelihood but eveerything is in log
 ```
 
 To put it all together, we come up with our custom MCMC R function:
