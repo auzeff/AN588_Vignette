@@ -55,7 +55,7 @@ Poisson processes model **random events over time or space**, especially **count
 
 -   Number of emails you get per hour
 
-![](images/Screen%20Shot%202025-04-08%20at%201.18.42%20PM.png){fig-align="center" width="567"}
+![](images/poissondef.png){fig-align="center" width="683"}
 
 ::: {.callout-tip collapse="true"}
 ## Another Example - Rolling a Die!
