@@ -305,13 +305,19 @@ lik(c(0.2, 0.05))
 lik(c(0.3, 0.06))
 ```
 
-How do we interpret these values?
+#### Challenge 4
+
+How do we interpret these likelihood values?
+
+::: {.callout-tip collapse="true"}
+## Solution
 
 While all of these likelihood values are positive, they can also be negative–this has to do with how log-likelihood is calculated here. When `lik()` runs, the log-likelihood of each branch is computed, and then these small probabilities are summed to give the total log-likelihood of the tree. That is, if you have a tree with $n$ branches, each contributing a log-likelihood value, the total log-likelihood is the sum of the log-likelihoods from all $n$ branches.
 
 When we compare these total values (the final output you see for each of the `lik()` functions here), we are looking for the most positive value among these results. In this case, $λ$ = 0.2 and $µ$ = 0.05 are the parameters for a model that has the largest log-likelihood for the `phylo` tree.
 
 You may wonder how we can be sure that a set of parameters are the best-fitting of all the possibilities. You can imagine that a guess and check method would take a while and not be a reasonable way to approach the problem. Luckily for us, the power of R will allow us to do this rather efficiently! Next, we will be looking at ways to estimate the parameters for a give tree with the maximum likelihood...
+:::
 
 ------------------------------------------------------------------------
 
@@ -359,7 +365,7 @@ Luckily, diversitree has a built-in function, `find.mle`, which abstracts this i
 
 #### **1. Define our initial values**
 
-Good initial values can help the optimization process run a bit better by helping the optimization algorithm converge faster and avoid getting stuck around local minima. If the initial values are far away from the true values, the optimization often fails or gives unreliable results. So how do you decide a good initial values? Usually, researchers won't know the speciation and extinction rates (0.2 and 0.05 respectively) like we do. There is no "right" way to go about defining these initial values, and there are plenty of ways being developed to decide this a bit more systematically. Often, it is the case that ecologists, by virtue of study and lot of time spent observing species and doing various analyses, have a pretty good idea of plausible starting points. Our initial guesses for lambda and mu, from which the algorithm will continue from, will be 0.15 and 0.01, respectively. Since we have a pretty good idea of what these true values are already (given that we were the ones that defined them), we'll start off with a guess a little far from the truth.
+Good initial values can help the optimization process run a bit better by helping the optimization algorithm converge faster and avoid getting stuck around local minima. If the initial values are far away from the true values, the optimization often fails or gives unreliable results. So how do you decide a good initial values? Usually, researchers won't know the speciation and extinction rates (0.2 and 0.1 respectively) like we do. There is no "right" way to go about defining these initial values, and there are plenty of ways being developed to decide this a bit more systematically. Often, it is the case that ecologists, by virtue of study and lot of time spent observing species and doing various analyses, have a pretty good idea of plausible starting points. Our initial guesses for lambda and mu, from which the algorithm will continue from, will be 0.1 and 0.05, respectively. Since we have a pretty good idea of what these true values are already (given that we were the ones that defined them), we'll start off with a guess a little far from the truth.
 
 ```{r}
 initial_values <- c(0.1, 0.05) # 0.1 = initial guess for lambda, 0.05 = initial guess for mu
@@ -375,7 +381,7 @@ fit_small <- find.mle(lik_small, initial_values, method = "subplex", control = l
 
 The default method for birth-death models is "nlm" (non-linear minimization), but other methods like "subplex" can be used for more complex trees (though sometimes this method is slower). If you find that the default isn't working, you can try a different method (like subplex), as we did here. The landscape of an evolutionary tree is a little complex, so we have used subplex for our demonstration.
 
-`control = list(maxit = 10000)` is a voluntary additional setting. 10,000 is the maximum number of iterations that this algorithm will be allow to perform. If the optimization doesn't converge within 10,000 iterations, then a warning will be issued and it will stop running. Increasing the number of iterations with `maxit` gives the optimizer more chances to find the best parameter values.
+`control = list(maxit = 10000)` is a voluntary additional setting. 10,000 is the maximum number of iterations that this algorithm will be allowed to perform. If the optimization doesn't converge within 10,000 iterations, then a warning will be issued and it will stop running. Increasing the number of iterations with `maxit` gives the optimizer more chances to find the best parameter values.
 
 ------------------------------------------------------------------------
 
@@ -401,7 +407,7 @@ By the way, this is the same as calculating the likelihood function for any para
 lik_small(coef(fit_small))
 ```
 
-So they're the same (as we would expect)! `logLik` is just a special command we can use here that works with the MLE model results. But, by being associated with a specific model here, `logLik` doesn't just give you the likelihood of parameters you manually input (as `lik()` or `lik_small()` do), it ALSO evaluates how well the MLE-fitted model (`fit_small`) works for modeling the `phylo_small` tree with these optimized parameters.
+So they're the same (as we would expect)! `logLik` is just a special command we can use here that works with the MLE model results. But, by being associated with a specific model here, `logLik` doesn't just give you the likelihood of parameters you manually input (as `lik()` or `lik_small()` do), it ALSO can be used to evaluate how well the MLE-fitted model (`fit_small`) works for modeling the `phylo_small` tree with these optimized parameters (when compared to the likelihoods of other models).
 
 Depending on your fitted model, you may be seeing a negative number and wondering why that is. It's important to remember that the likelihood functions do not always (or even often) return positive values. 18.47938 is the highest (as in the least negative/most positive) likelihood value for this run of the algorithm, but you may find that your likelihood value is different.
 
@@ -420,7 +426,7 @@ fit_small$lnLik
 The Yule model ("pure birth" model) assumes $mu$ = 0.
 
 ```{r}
-lik.yule <- constrain(lik_small, mu ~ 0) # pure birth model (Yule) where the extinction rate = 0
+lik.yule <- constrain(lik_small, mu ~ 0) # pure birth model (Yule) where the extinction rate = 0 (parameter is limited to 0 with the constrain() function)
 argnames(lik.yule) # output = "lambda" because lambda is the only parameter free to vary here; lambda should be the only output here
 ```
 
@@ -435,9 +441,9 @@ Now, we'll use an ANOVA test to perform a likelihood ratio test:
 anova(fit_small, fit_yule)
 ```
 
-A lower AIC (Akaike Information Criterion) indicates that the "full" model (fit_small) fits the data better than the Yule model (see significance codes for significance level). Briefly, in model selection AIC penalizes models that have a higher level of complexity (i.e. more parameters). Despite being more complex, the full model still fits the `phylo_small` tree better. Sometimes the tradeoff between complexity and fit will favor the simpler model (the Yule model). In fact, some you might see this result.
+A lower AIC (Akaike Information Criterion) indicates that the "full" model (fit_small) fits the data better than the Yule model (shown as Model 1 here; see significance codes for significance level). Briefly, in model selection AIC penalizes models that have a higher level of complexity (i.e. more parameters). Despite being more complex, the full model still fits the `phylo_small` tree better. Sometimes the tradeoff between complexity and fit will favor the simpler model (the Yule model). In fact, some of you might see that result.
 
-Also notice that the `lnLik` (the log likelihood) for the `fit_small` is more positive than `fit_yule`. The AIC itself is based on the likelihood of the model so this should be expected. That is, the favorable model should have a higher likelihood value and a lower AIC.
+Also notice that the `lnLik` (the log likelihood) for `fit_small` is more positive than `fit_yule`. The AIC itself is based on the likelihood of the model so this should be expected. That is, the favorable model should have a higher likelihood value and a lower AIC.
 
 ------------------------------------------------------------------------
 
@@ -477,7 +483,7 @@ Using this model, we can perform the chain part of Markov chain. This means that
 
 ------------------------------------------------------------------------
 
-#### Challenge 4
+#### Challenge 5
 
 Taking the weather model, we tracked the weather states of 7 days beginning on a *rainy* day:
 
@@ -715,7 +721,7 @@ abline(v=c(0.1, 0.03, 0.07), col = col, lty = 2)
 
 We can see that both plots are basically identical!
 
-#### Challenge 5
+#### Challenge 6
 
 Write a function that takes a pair of values and gets their probability based on an **exponential** distribution. Then plug this in into both the custom MCMC function and the one provided by `diversitree`. How does this information change the figures in the end?
 
