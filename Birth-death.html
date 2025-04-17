@@ -121,11 +121,14 @@ window.Quarto = {
   <li><a href="#why-birth-death-models-matter" id="toc-why-birth-death-models-matter" class="nav-link" data-scroll-target="#why-birth-death-models-matter">Why Birth-Death Models Matter</a></li>
   </ul></li>
   <li><a href="#diversitree" id="toc-diversitree" class="nav-link" data-scroll-target="#diversitree">diversitree</a></li>
+  <li><a href="#modeling" id="toc-modeling" class="nav-link" data-scroll-target="#modeling">Modeling</a>
+  <ul>
   <li><a href="#making-a-model" id="toc-making-a-model" class="nav-link" data-scroll-target="#making-a-model">Making a model</a></li>
   <li><a href="#plotting-our-model" id="toc-plotting-our-model" class="nav-link" data-scroll-target="#plotting-our-model">Plotting our model</a>
-  <ul>
+  <ul class="collapse">
   <li><a href="#challenge-1" id="toc-challenge-1" class="nav-link" data-scroll-target="#challenge-1">Challenge 1</a></li>
   <li><a href="#challenge-2" id="toc-challenge-2" class="nav-link" data-scroll-target="#challenge-2">Challenge 2</a></li>
+  </ul></li>
   </ul></li>
   <li><a href="#likelihood-functions" id="toc-likelihood-functions" class="nav-link" data-scroll-target="#likelihood-functions">Likelihood functions</a>
   <ul>
@@ -139,9 +142,9 @@ window.Quarto = {
   <ul>
   <li><a href="#retrieving-maximum-likelihood-estimates" id="toc-retrieving-maximum-likelihood-estimates" class="nav-link" data-scroll-target="#retrieving-maximum-likelihood-estimates">Retrieving maximum likelihood estimates</a>
   <ul class="collapse">
-  <li><a href="#define-our-initial-values" id="toc-define-our-initial-values" class="nav-link" data-scroll-target="#define-our-initial-values"><strong>1. Define our initial values</strong></a></li>
-  <li><a href="#fitting-our-maximum-likelihood-model" id="toc-fitting-our-maximum-likelihood-model" class="nav-link" data-scroll-target="#fitting-our-maximum-likelihood-model"><strong>2. Fitting our Maximum Likelihood model</strong></a></li>
-  <li><a href="#extract-coefficients-from-the-fitted-model" id="toc-extract-coefficients-from-the-fitted-model" class="nav-link" data-scroll-target="#extract-coefficients-from-the-fitted-model"><strong>3. Extract coefficients from the fitted model</strong></a></li>
+  <li><a href="#define-our-initial-values" id="toc-define-our-initial-values" class="nav-link" data-scroll-target="#define-our-initial-values">1. Define our initial values</a></li>
+  <li><a href="#fitting-our-maximum-likelihood-model" id="toc-fitting-our-maximum-likelihood-model" class="nav-link" data-scroll-target="#fitting-our-maximum-likelihood-model">2. Fitting our Maximum Likelihood model</a></li>
+  <li><a href="#extract-coefficients-from-the-fitted-model" id="toc-extract-coefficients-from-the-fitted-model" class="nav-link" data-scroll-target="#extract-coefficients-from-the-fitted-model">3. Extract coefficients from the fitted model</a></li>
   </ul></li>
   <li><a href="#does-this-model-fit-better-than-a-model-without-extinction" id="toc-does-this-model-fit-better-than-a-model-without-extinction" class="nav-link" data-scroll-target="#does-this-model-fit-better-than-a-model-without-extinction">Does this model fit better than a model without extinction?</a></li>
   </ul></li>
@@ -156,7 +159,7 @@ window.Quarto = {
   <li><a href="#challenge-6" id="toc-challenge-6" class="nav-link" data-scroll-target="#challenge-6">Challenge 6</a></li>
   </ul></li>
   </ul></li>
-  <li><a href="#helpful-links-for-more-practice" id="toc-helpful-links-for-more-practice" class="nav-link" data-scroll-target="#helpful-links-for-more-practice">Helpful Links For More Practice:</a></li>
+  <li><a href="#helpful-links-for-more-practice" id="toc-helpful-links-for-more-practice" class="nav-link" data-scroll-target="#helpful-links-for-more-practice">Helpful Links For More Practice</a></li>
   </ul>
 </nav>
 </div>
@@ -307,8 +310,10 @@ Another Example - Rolling a Die!
 </div>
 <hr>
 </section>
-<section id="making-a-model" class="level2">
-<h2 class="anchored" data-anchor-id="making-a-model">Making a model</h2>
+<section id="modeling" class="level2">
+<h2 class="anchored" data-anchor-id="modeling">Modeling</h2>
+<section id="making-a-model" class="level3">
+<h3 class="anchored" data-anchor-id="making-a-model">Making a model</h3>
 <p>The two parameters for a simple constant-rate birth-death model are <span class="math inline">\(λ\)</span> and <span class="math inline">\(µ\)</span>. <span class="math inline">\(λ\)</span> represents the speciation rate in our simulated phylogeny, while <span class="math inline">\(µ\)</span> represents the extinction rate. We’ll start by making a tree using these parameters, as well as the maximum number of species (<code>max.taxa = ...</code> ) we’d like our model to diversify to.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Defining our parameters</span></span>
@@ -382,8 +387,8 @@ Phylogenetic tree: phylo
 <p>Where’s the fun of a tree that you can’t see? It’s time to start…</p>
 <hr>
 </section>
-<section id="plotting-our-model" class="level2">
-<h2 class="anchored" data-anchor-id="plotting-our-model">Plotting our model</h2>
+<section id="plotting-our-model" class="level3">
+<h3 class="anchored" data-anchor-id="plotting-our-model">Plotting our model</h3>
 <p>Plotting a tree is as simple as sticking it into the <code>plot()</code> function:</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(phylo)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -519,6 +524,7 @@ Solution (updated)
 <hr>
 </section>
 </section>
+</section>
 <section id="likelihood-functions" class="level2">
 <h2 class="anchored" data-anchor-id="likelihood-functions">Likelihood functions</h2>
 <p>First things first, we need to construct a likelihood function. The likelihood function of a birth-death model estimates the probability of observing a given phylogenetic tree under the assumed rates of speciation and extinction. It will form the backbone of both of our primary analysis methods.</p>
@@ -531,7 +537,7 @@ Solution (updated)
 <p><span class="math display">\[
 lik=(N-1)!\lambda^{N-2}\left\{ \prod_{i=3}^{N}P(t_i,T) \right\}(1-u_{x_2})^2\prod_{i=3}^{N}(1-u_{x_i})
 \]</span><br>
-In addition to <span class="math inline">\(t_i\)</span>, we see several new variables. <span class="math inline">\(T\)</span> represents the present time, <span class="math inline">\(N\)</span> is the total number of lineages in the phylogeny, and <span class="math inline">\((1-u_{x_i})\)</span> is the probability of a single lineage after an amount of time <span class="math inline">\(x_i\)</span>.</p>
+In addition to <span class="math inline">\(t_i\)</span>, we see several new variables. <span class="math inline">\(T\)</span> represents the present time, <span class="math inline">\(N\)</span> is the total number of lineages in the phylogeny, and <span class="math inline">\((1-u_{x_i})\)</span> is the probability of a single progeny after an amount of time <span class="math inline">\(x_i\)</span>.</p>
 <p>This equation is useful, but in our case it would likely be more helpful to see a different derivation of the likelihood, also found in Nee et al.&nbsp;(1994):</p>
 <p><span class="math display">\[
 lik=(N-1)!(\lambda-\mu)^{N-2}exp\left((\lambda-\mu)\sum_{n=2}^{N-1}x_{n+1}\right)(1-\frac{\mu}{\lambda})^N\prod_{n=2}^{N}\frac{1}{(exp((\lambda-\mu)x_n)-\frac{\mu}{\lambda})^2}
@@ -668,7 +674,7 @@ Solution
 </div>
 <p>Luckily, diversitree has a built-in function, <code>find.mle</code>, which abstracts this iterative optimization process. This allows us to find the parameters that maximize the likelihood for a certain tree very quickly. Lets take a look at how to use <code>find.mle</code> and other functions to perform a Maximum Likelihood (ML) analysis.</p>
 <section id="define-our-initial-values" class="level4">
-<h4 class="anchored" data-anchor-id="define-our-initial-values"><strong>1. Define our initial values</strong></h4>
+<h4 class="anchored" data-anchor-id="define-our-initial-values">1. Define our initial values</h4>
 <p>Good initial values can help the optimization process run a bit better by helping the optimization algorithm converge faster and avoid getting stuck around local minima. If the initial values are far away from the true values, the optimization often fails or gives unreliable results. So how do you decide a good initial values? Usually, researchers won’t know the speciation and extinction rates (0.2 and 0.1 respectively) like we do. There is no “right” way to go about defining these initial values, and there are plenty of ways being developed to decide this a bit more systematically. Often, it is the case that ecologists, by virtue of study and lot of time spent observing species and doing various analyses, have a pretty good idea of plausible starting points. Our initial guesses for lambda and mu, from which the algorithm will continue from, will be 0.1 and 0.05, respectively. Since we have a pretty good idea of what these true values are already (given that we were the ones that defined them), we’ll start off with a guess a little far from the truth.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>initial_values <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fl">0.1</span>, <span class="fl">0.05</span>) <span class="co"># 0.1 = initial guess for lambda, 0.05 = initial guess for mu</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -676,7 +682,7 @@ Solution
 <hr>
 </section>
 <section id="fitting-our-maximum-likelihood-model" class="level4">
-<h4 class="anchored" data-anchor-id="fitting-our-maximum-likelihood-model"><strong>2. Fitting our Maximum Likelihood model</strong></h4>
+<h4 class="anchored" data-anchor-id="fitting-our-maximum-likelihood-model">2. Fitting our Maximum Likelihood model</h4>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>fit_small <span class="ot">&lt;-</span> <span class="fu">find.mle</span>(lik_small, initial_values, <span class="at">method =</span> <span class="st">"subplex"</span>, <span class="at">control =</span> <span class="fu">list</span>(<span class="at">maxit =</span> <span class="dv">10000</span>)) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
@@ -685,7 +691,7 @@ Solution
 <hr>
 </section>
 <section id="extract-coefficients-from-the-fitted-model" class="level4">
-<h4 class="anchored" data-anchor-id="extract-coefficients-from-the-fitted-model"><strong>3. Extract coefficients from the fitted model</strong></h4>
+<h4 class="anchored" data-anchor-id="extract-coefficients-from-the-fitted-model">3. Extract coefficients from the fitted model</h4>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="fu">coef</span>(fit_small)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -1136,7 +1142,7 @@ Solution
 </section>
 </section>
 <section id="helpful-links-for-more-practice" class="level2">
-<h2 class="anchored" data-anchor-id="helpful-links-for-more-practice">Helpful Links For More Practice:</h2>
+<h2 class="anchored" data-anchor-id="helpful-links-for-more-practice">Helpful Links For More Practice</h2>
 <ul>
 <li><p><a href="https://www.zoology.ubc.ca/prog/diversitree/doc/diversitree-tutorial.pdf" class="uri">https://www.zoology.ubc.ca/prog/diversitree/doc/diversitree-tutorial.pdf</a></p></li>
 <li><p><a href="https://doi.org/10.1111/j.2041-210x.2012.00234.x" class="uri">https://doi.org/10.1111/j.2041-210x.2012.00234.x</a></p></li>

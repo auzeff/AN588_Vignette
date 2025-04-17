@@ -121,7 +121,9 @@ library(diversitree)
 
 ------------------------------------------------------------------------
 
-## Making a model
+## Modeling
+
+### Making a model
 
 The two parameters for a simple constant-rate birth-death model are $λ$ and $µ$. $λ$ represents the speciation rate in our simulated phylogeny, while $µ$ represents the extinction rate. We'll start by making a tree using these parameters, as well as the maximum number of species (`max.taxa = ...` ) we'd like our model to diversify to.
 
@@ -148,7 +150,7 @@ Where's the fun of a tree that you can't see? It's time to start...
 
 ------------------------------------------------------------------------
 
-## Plotting our model
+### Plotting our model
 
 Plotting a tree is as simple as sticking it into the `plot()` function:
 
@@ -363,7 +365,7 @@ filled.contour(lambda_vals, mu_vals, lik_matrix,
 
 Luckily, diversitree has a built-in function, `find.mle`, which abstracts this iterative optimization process. This allows us to find the parameters that maximize the likelihood for a certain tree very quickly. Lets take a look at how to use `find.mle` and other functions to perform a Maximum Likelihood (ML) analysis.
 
-#### **1. Define our initial values**
+#### 1. Define our initial values
 
 Good initial values can help the optimization process run a bit better by helping the optimization algorithm converge faster and avoid getting stuck around local minima. If the initial values are far away from the true values, the optimization often fails or gives unreliable results. So how do you decide a good initial values? Usually, researchers won't know the speciation and extinction rates (0.2 and 0.1 respectively) like we do. There is no "right" way to go about defining these initial values, and there are plenty of ways being developed to decide this a bit more systematically. Often, it is the case that ecologists, by virtue of study and lot of time spent observing species and doing various analyses, have a pretty good idea of plausible starting points. Our initial guesses for lambda and mu, from which the algorithm will continue from, will be 0.1 and 0.05, respectively. Since we have a pretty good idea of what these true values are already (given that we were the ones that defined them), we'll start off with a guess a little far from the truth.
 
@@ -373,7 +375,7 @@ initial_values <- c(0.1, 0.05) # 0.1 = initial guess for lambda, 0.05 = initial 
 
 ------------------------------------------------------------------------
 
-#### **2. Fitting our Maximum Likelihood model**
+#### 2. Fitting our Maximum Likelihood model
 
 ```{r}
 fit_small <- find.mle(lik_small, initial_values, method = "subplex", control = list(maxit = 10000)) 
@@ -385,7 +387,7 @@ The default method for birth-death models is "nlm" (non-linear minimization), bu
 
 ------------------------------------------------------------------------
 
-#### **3. Extract coefficients from the fitted model**
+#### 3. Extract coefficients from the fitted model
 
 ```{r}
 coef(fit_small)
@@ -757,7 +759,7 @@ abline(v=c(0.1, 0.03, 0.07), col = col, lty = 2)
 
 ------------------------------------------------------------------------
 
-## Helpful Links For More Practice:
+## Helpful Links For More Practice
 
 -   <https://www.zoology.ubc.ca/prog/diversitree/doc/diversitree-tutorial.pdf>
 
