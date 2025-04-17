@@ -251,7 +251,7 @@ These functions are derived from and allow for model-fitting to empirical phylog
 $$
 lik=(N-1)!\lambda^{N-2}\left\{ \prod_{i=3}^{N}P(t_i,T) \right\}(1-u_{x_2})^2\prod_{i=3}^{N}(1-u_{x_i})
 $$\
-In addition to $t_i$, we see several new variables. $T$ represents the present time, $N$ is the total number of lineages in the phylogeny, and $(1-u_{x_i})$ is the probability of a single lineage after an amount of time $x_i$.
+In addition to $t_i$, we see several new variables. $T$ represents the present time, $N$ is the total number of lineages in the phylogeny, and $(1-u_{x_i})$ is the probability of a single progeny after an amount of time $x_i$.
 
 This equation is useful, but in our case it would likely be more helpful to see a different derivation of the likelihood, also found in Nee et al. (1994):
 
