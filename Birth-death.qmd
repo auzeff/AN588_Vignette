@@ -542,7 +542,7 @@ Our next proposed value can be a random value that is 0.1 steps away. We can den
 
 ```{r}
 set.seed(2)
-w = 0.1
+w = 0.1 # We assume that the maximum step size for each rate is 0.1
 proposal_par <- current_par + runif(2, -w, w) # Generates 2 random numbers between -w and w
 proposal_par # Make sure that the parameters are not negative!
 ```
@@ -625,8 +625,10 @@ prior_fn_normal <- function(par) { # par = c(lambda, mu)
 This then affects the current likelihood values by:
 
 ```{r}
-current_lik <- current_lik + log(prior_fn_normal(current_par)) # Posterior = Prior x Likelihood but eveerything is in log
+current_lik <- current_lik + log(prior_fn_normal(current_par)) # Posterior = Prior x Likelihood but eveerything is in log so we just add them
 ```
+
+Recall that in the Bayes Theorem formula we need to divide *Likelihood* by *Marginal likelihood* or *Evidence*. However, in the Metropolis-Hastings algorithm we are working with the acceptance ratio `r`. When making this calculation, the *Marginal likelihood* is present in both the current and proposed posterior value so the *Marginal* value is cancelled out.
 
 To put it all together, we come up with our custom MCMC R function:
 
@@ -744,7 +746,7 @@ prior_fn_exp <- function(par) {
   mu <- par[2]
   
   if (lambda > 0 && mu > 0 && mu < lambda) {
-    return(dexp(lambda, rate = 10) * dexp(mu, rate = 10))
+    return(dexp(lambda, rate = 10) * dexp(mu, rate = 10)) #rate parameter controls how quickly the probability decays. 10 is actually very fast, showing that there is little variability around my mu and lambda values.
   } else {
     return(0)  # Do not allow impossible or illogical values
   }
