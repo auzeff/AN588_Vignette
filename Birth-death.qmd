@@ -32,7 +32,7 @@ Birth-death models are critical in evolutionary biology and function to help res
 
 -   **Simulate Phylogenetic Trees:** Use the diversitree R package to create and visualize evolutionary trees based on speciation and extinction rates
 
--   **Understand and Apply MLEs:** Apply Maximum Likelihood Estimation (MLE) to determine speciation and extinction rates.
+-   **Understand and Apply MLEs:** Apply Maximum Likelihood Estimation (MLE) to determine speciation and extinction rates
 
 -   **Perform Bayesian Analysis with MCMC:** Implement Markov Chain Monte Carlo (MCMC) methods to explore posterior distributions (where each value depends only on the previous one) for model parameters
 
