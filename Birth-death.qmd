@@ -32,7 +32,7 @@ Birth-death models are critical in evolutionary biology and function to help res
 
 -   **Simulate Phylogenetic Trees:** Use the diversitree R package to create and visualize evolutionary trees based on speciation and extinction rates
 
--   **Understand and Apply MLEs:** Apply Maximum Likelihood Estimation (MLE) to determine speciation and extinction rates.
+-   **Understand and Apply MLEs:** Apply Maximum Likelihood Estimation (MLE) to determine speciation and extinction rates
 
 -   **Perform Bayesian Analysis with MCMC:** Implement Markov Chain Monte Carlo (MCMC) methods to explore posterior distributions (where each value depends only on the previous one) for model parameters
 
@@ -242,13 +242,13 @@ Making a cool tree is all well and good, but if we actually want some substantiv
 
 First things first, we need to construct a likelihood function. The likelihood function of a birth-death model estimates the probability of observing a given phylogenetic tree under the assumed rates of speciation and extinction. It will form the backbone of both of our primary analysis methods.
 
-For each branching event occurring at time $t_i$, we define:
+For each branching event occurring at time $t_i$ (the i-th branching event), we define:
 
 -   $p_o(t_i)$: Probability that a lineage goes extinct before time $t_i$
 
--   $p_o(t_i)$: Probability that a lineage survives and splits by $t_i$
+-   $p_1(t_i)$: Probability that a lineage survives and splits by $t_i$
 
-These functions are derived from and allow for model-fitting to empirical phylogenetic data. In our case, these variables will factor into the beautiful and not at all confusing equation derived in Nee et al. (1994):
+These probabilities are derived from the functions of λ and µ, which allow for model-fitting to empirical phylogenetic data. In our case, these variables will factor into the beautiful and not at all confusing equation derived in Nee et al. (1994):
 
 $$
 lik=(N-1)!\lambda^{N-2}\left\{ \prod_{i=3}^{N}P(t_i,T) \right\}(1-u_{x_2})^2\prod_{i=3}^{N}(1-u_{x_i})
