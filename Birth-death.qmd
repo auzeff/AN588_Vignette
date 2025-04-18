@@ -710,7 +710,7 @@ profiles.plot(test_mcmc[c("lambda", "mu", "r")], col.line = col, las = 1, legend
 abline(v=c(0.1, 0.03, 0.07), col = col, lty = 2) 
 ```
 
-We can see that everything aligns pretty well!
+We can see that everything aligns pretty well! Our results align to our tree creation parameters.
 
 In the figure, bars at the bottom of each distribution and shaded areas correspond to the 95% credibility intervals.
 
@@ -756,6 +756,331 @@ prior_fn_exp <- function(par) {
 ```{r}
 set.seed(2)
 base_mcmc_norm <- mcmc(lik, start_par, nsteps = 10000, w = 0.1, print.every = 0, prior = prior_fn_exp)
+head(base_mcmc_norm)
+```
+
+```{r}
+base_mcmc_norm$r <- base_mcmc_norm$lambda - base_mcmc_norm$mu
+col <- c("#eaab00", "#004165", "#618e02")
+profiles.plot(base_mcmc_norm[c("lambda", "mu", "r")], col.line = col, las = 1, legend.pos = "topright")
+abline(v=c(0.1, 0.03, 0.07), col = col, lty = 2)
+```
+:::
+
+What we have above is a simple weather model where we have 3 states: *rainy, cloudy, and sunny*. The way to read this is by paying attention to the direction of the arrows. For example, the arrow that self-points to the *sunny* state means that if today is *sunny*, the chances of being *sunny* again is of 0.8. The arrow that points from *sunny* to *cloudy* says that if today is *sunny*, then the probability of it being *cloudy* is of 0.1. Easy!
+
+Using this model, we can perform the chain part of Markov chain. This means that we can create a path or chain of events by "walking" from state to state at random. But remember! In a Markov chain, the probability of transitioning from a current state to a future state solely depends on the current state and not its history of states! Let's do a challenge to see if you understood the concept.
+
+------------------------------------------------------------------------
+
+#### Challenge 5
+
+Taking the weather model, we tracked the weather states of 7 days beginning on a *rainy* day:
+
+`rainy -> cloudy -> rainy -> sunny -> sunny -> rainy -> rainy -> ...`
+
+What is the probability of it being a *cloudy* day on the 8th day?
+
+::: {.callout-tip collapse="true"}
+## Solution
+
+`0.3`
+:::
+
+------------------------------------------------------------------------
+
+Let's talk about the **Monte Carlo** part of the MCMC. In essence, a **Monte Carlo Simulation** is a model that is used to predict the probability of a range of outcomes when accounting a complex situation where many random variables could influence real life outcomes. It does this by repeated random sampling. Sounds familiar right? That's cause it is very similar in concept to bootstrapping! What differs is that **Monte Carlo** simulates data from a model, while bootstrapping simply re-samples from a dataset.
+
+*Fun fact! the model is named after the famous Monte Carlo Casino in Monaco as a reference to the randomness associated with gambling! Don't gamble, learn stats instead!*
+
+We can use this simple method to solve complex questions!
+
+------------------------------------------------------------------------
+
+### Putting it all together
+
+Now it’s time to merge all of these concepts to define MCMC. This algorithm is a Bayesian approach, meaning that previous assumptions are important to how the new data will be interpreted. The algorithm works by repeatedly proposing random parameter values and evaluating how well they fit the data (using likelihoods and priors, if provided). It then decides whether to accept or reject them using the **Metropolis-Hastings algorithm.** This decision process works by proposing a new sample based on the current sample and then accepting or rejecting it depending on the ratio of the likelihood of the proposed value to the likelihood of the current value. As we repeat this process, due to the acceptance rule, we will slowly accumulate samples that approximate the posterior distribution. This posterior distribution in our case means the range of values our speciation rate ($λ$) and extinction rate ($\mu$) parameters take.
+
+Enough textbook info and let's see step by step how the algorithm works!
+
+Let's set everything up:
+
+```{r}
+set.seed(2)
+phy <- tree.bd(c(.1,.03), max.taxa = 100) # simulate phylogenetic tree
+lik <- make.bd(phy) # create likelihood function based on simulated tree
+```
+
+We can make our initial guesses of $λ$ and $μ$ based on the results from MLE!
+
+```{r}
+fit <- find.mle(lik, c(0.1, 0.03), method = "subplex")
+coef(fit) # use coef() to see the estimated parameters
+```
+
+We can then get the likelihood value of this current value:
+
+```{r}
+current_par <- c(coef(fit)[[1]], coef(fit)[[2]]) # Use indexing to extract the values for lambda and mu
+current_lik <- lik(current_par)
+current_lik
+```
+
+Our next proposed value can be a random value that is 0.1 steps away. We can denote this step variable as `w` . Please note that parameters in our case cannot be negative since you can't have a negative rate of speciation and extinction.
+
+```{r}
+set.seed(2)
+w = 0.1 # We assume that the maximum step size for each rate is 0.1
+proposal_par <- current_par + runif(2, -w, w) # Generates 2 random numbers between -w and w
+proposal_par # Make sure that the parameters are not negative!
+```
+
+From these proposal parameters we can derive the new likelihood by inserting it to our likelihood function.
+
+```{r}
+proposal_lik <- lik(proposal_par)
+proposal_lik
+```
+
+As directed by the Metropolis-Hastings part of the algorithm, we now need to decide if to accept or reject this new set of parameters. As mentioned we can follow this formula:
+
+$$
+r=L(current)/L(proposal)​
+$$
+
+But since `lik` gives us the log of likelihood values, we can rework the formula to this:
+
+$$
+log r=logL(proposal)−logL(current)
+$$
+
+```{r}
+log_r <- proposal_lik - current_lik
+r <- exp(log_r) # Since everything is in log, we use exp() to show us the actual value
+r
+```
+
+The `r` value we received is extremely low, meaning that the proposed parameters performed worse than the current parameters. One could automatically discard them, but sometimes these worse values have a place in the final distribution of values. To decide on this, we can write this little conditional:
+
+```{r}
+set.seed(1)
+if (runif(1) < r) { # we take a random value from a uniform probability distribution that goes from 0 to 1 and compare it to r
+      current_par <- proposal_par
+      current_lik <- proposal_lik
+}
+
+# If r >1, any value from runif(1) will be smaller than r, hence it will always be accepted
+```
+
+What this code does is:
+
+1.  It takes a random value from 0-1 based on a uniform distribution, meaning that all values are equally probable of being chosen.
+2.  If r \> 1, then it will always be accepted and the current parameters and likelihood values will be replaced by the proposed ones.
+3.  If r \< 1, then we need to see if it is bigger than the value from `runif(1)`. This means that the proposed values will be accepted with a probability of r
+
+We can see that in this case, the proposed value was rejected:
+
+```{r}
+current_lik
+```
+
+If we repeat this process many many times, essentially creating a "random walk" along the parameter space, we will eventually get closer to the area where the "real values" are (a.k.a the posterior distribution)!
+
+You must have noticed that when introducing the Bayesian nature of MCMC, we mentioned prior distributions and how these previous assumptions can change how the prior distribution presents itself. The prior directly shapes the posterior by increasing or decreasing the probability of visiting a particular parameter region.
+
+We can create a function that takes this into account. We want a function that can take in the value of both of the parameters. It then needs to get their probability based on a specific probabiliity distribution - which in our example will be a normal distribution - and multiply them to get a **joint prior**. We can do this if we assume that λ and μ are **independent.**
+
+$$
+P(λ,μ)=P(λ)⋅P(μ)
+$$
+
+```{r}
+prior_fn_normal <- function(par) { # par = c(lambda, mu)
+  lambda <- par[1]
+  mu <- par[2]
+  if (lambda > 0 && mu > 0 && mu < lambda) { # We assume that net diversification rate is positive so mu can't be higher than lambda
+    return(dnorm(lambda, mean = 0.1, sd = 0.03) * dnorm(mu, mean = 0.03, sd = 0.02)) 
+    # Multiply these distributions to join them
+    # The mean were chosen to be the initial parameters used to create the tree
+    # sd values were arbitrary decisions
+  } else {
+    return(0)  # Do not allow impossible or illogical values
+  }
+  
+}
+```
+
+This then affects the current likelihood values by:
+
+```{r}
+current_lik <- current_lik + log(prior_fn_normal(current_par)) # Posterior = Prior x Likelihood but eveerything is in log so we just add them
+```
+
+Recall that in the Bayes Theorem formula we need to divide *Likelihood* by *Marginal likelihood* or *Evidence*. However, in the Metropolis-Hastings algorithm we are working with the acceptance ratio `r`. When making this calculation, the *Marginal likelihood* is present in both the current and proposed posterior value so the *Marginal* value is cancelled out.
+
+To put it all together, we come up with our custom MCMC R function:
+
+```{r}
+custom_mcmc <- function(likelihood_fn, start, nsteps = 100000, w = 0.1, prior_fn = NULL) {
+  # Initialize matrix to hold samples for lambda, mu, and log-likelihood
+  samples <- matrix(NA, nrow = nsteps, ncol = 3)
+  colnames(samples) <- c("lambda", "mu", "log_lik")
+  samples[1, 1:2] <- start # Go to first row and extract values from lambda and mu column
+  
+  # Current state: lambda and mu
+  current_par <- start
+  current_lik <- likelihood_fn(current_par)
+  
+  # Include prior if specified
+  if (!is.null(prior_fn)) {
+    current_lik <- current_lik + log(prior_fn(current_par))
+  }
+  
+  # Store initial log-likelihood in row 1 column 3
+  samples[1, 3] <- current_lik
+  
+  for (i in 2:nsteps) { # We start in position 2 because the first column has already been filled with our initial guesses
+    
+    # Propose new values for lambda and mu
+    proposal_par <- current_par + runif(2, -w, w) # Generates 2 random numbers between -w and w
+    
+    # Check that proposed values are positive and finite (otherwise they won't work in the likelihood function)
+    if (any(proposal_par <= 0) || any(!is.finite(proposal_par))) { # || means OR
+      samples[i, ] <- c(current_par, current_lik)  # Reject and stay at current state
+      next
+    }
+    
+    # Evaluate likelihood at the proposed values
+    proposal_lik <- likelihood_fn(proposal_par)
+    
+    # Include prior if specified
+    if (!is.null(prior_fn)) {
+      proposal_lik <- proposal_lik + log(prior_fn(proposal_par))
+    }
+    
+    # Compute acceptance ratio (on log scale)
+    log_r <- proposal_lik - current_lik
+    r <- exp(log_r)
+    
+    # Accept or reject the proposal based on r>1 or r<1
+    if (runif(1) < r) {
+      current_par <- proposal_par
+      current_lik <- proposal_lik
+    }
+    
+    # Store the current state (either new or previous) and log-posterior
+    samples[i, ] <- c(current_par, current_lik)
+  }
+  
+  # Return results as a data frame
+  return(as.data.frame(samples))
+}
+```
+
+Let's use our data to see the posterior distribution we get!
+
+```{r}
+start_par <- c(coef(fit)[[1]], coef(fit)[[2]])
+test_mcmc <- custom_mcmc(lik, start_par, w = 0.1)
+head(test_mcmc)
+```
+
+What we get is a table of our posterior distribution with our accepted $λ$ and $μ$ parameters and their likelihood values. We can plot this using:
+
+```{r}
+# create r column based on lambda and mu
+test_mcmc$r <- test_mcmc$lambda - test_mcmc$mu 
+
+col <- c("#eaab00", "#004165", "#618e02")
+profiles.plot(test_mcmc[c("lambda", "mu", "r")], col.line = col, las = 1, legend.pos = "topright")
+
+# Let's see to how the parameters used to simulate the tree compare to our posterior distribution
+abline(v=c(0.1, 0.03, 0.07), col = col, lty = 2) 
+```
+
+We can see that everything aligns pretty well!
+
+In the figure, bars at the bottom of each distribution and shaded areas correspond to the 95% credibility intervals.
+
+**How will this change if we give it an informative prior distribution?**
+
+```{r}
+test_mcmc_prior <- custom_mcmc(lik, start_par, w = 0.1, prior_fn = prior_fn_normal) # Add function without ()
+test_mcmc_prior$r <- test_mcmc_prior$lambda - test_mcmc_prior$mu 
+col <- c("#eaab00", "#004165", "#618e02")
+profiles.plot(test_mcmc_prior[c("lambda", "mu", "r")], col.line = col, las = 1, legend.pos = "topright")
+abline(v=c(0.1, 0.03, 0.07), col = col, lty = 2)
+```
+
+However, in reality, we can skip all of this and use the `mcmc()` function from `diversitree` R to avoid writing our own MCMC algorithm from scratch:
+
+```{r}
+set.seed(2)
+dt_mcmc <- mcmc(lik, start_par, nsteps = 10000, w = 0.1, print.every = 0) # Assuming uninformative prior so we won't add prior
+head(dt_mcmc)
+```
+
+And plot!
+
+```{r}
+dt_mcmc$r <- dt_mcmc$lambda - dt_mcmc$mu
+col <- c("#eaab00", "#004165", "#618e02")
+profiles.plot(dt_mcmc[c("lambda", "mu", "r")], col.line = col, las = 1, legend.pos = "topright")
+abline(v=c(0.1, 0.03, 0.07), col = col, lty = 2)
+```
+
+We can see that both plots were we don't include priors are basically identical!
+
+In true practice, we also need to consider the concept of **Burn in*.*** `mcmc()` doesn't automatically do this nor does it have a parameter to do this, so we would need to do this manually and decide how much burn in we consider the model to have.
+
+```{r}
+# Assuming we have a 20% burn in
+burn_in <- 0.2
+n_burn <- floor(nrow(dt_mcmc) * burn_in) # Will calculate how many columns to burn
+# We use floor() to round down just in case the result is a float
+n_burn
+dt_mcmc_burn <- dt_mcmc[-(1:n_burn),] # pick rows 1 through n_burn and remove them from our old sample
+
+```
+
+```{r}
+plot(dt_mcmc$lambda, type = "l", main = "Trace plot for λ") # Plot trace plot to see each value of lambda picked in each iteration
+abline(v = floor(0.2 * nrow(dt_mcmc)), col = "red", lty = 2) # Mark vertical line to see which portions we decided to burn
+```
+
+We can see that in the trace plot shows that, while there is a lot of noise, they are all in the 0.10 mean lambda value. This just means that our initial guesses from MLE weren't too far from the actual region where the posterior distribution was. We can see how this changes if we do include more 'outlandish' initial guesses:
+
+```{r}
+big_guess <- c(0.9, 0.5)
+dt_mcmc <- mcmc(lik, big_guess, nsteps = 10000, w = 0.1, print.every = 0)
+plot(dt_mcmc$lambda, type = "l", main = "Trace plot for λ")
+```
+
+You can see how in the beginning there is an enormous drop, showing not only that `mcmc()` can guide us to the correct value region and the importance of burn in, which in this case doesn't need to be as drastic as 20%
+
+#### Challenge 6
+
+Write a function that takes a pair of values and gets their probability based on an **exponential** distribution. Then plug this in into both the custom MCMC function and the one provided by `diversitree`. How does this information change the figures in the end?
+
+::: {.callout-tip collapse="true"}
+## Solution
+
+```{r}
+prior_fn_exp <- function(par) {
+  lambda <- par[1]
+  mu <- par[2]
+  
+  if (lambda > 0 && mu > 0 && mu < lambda) {
+    return(dexp(lambda, rate = 10) * dexp(mu, rate = 10)) #rate parameter controls how quickly the probability decays. 10 is actually very fast, showing that there is little variability around my mu and lambda values.
+  } else {
+    return(0)  # Do not allow impossible or illogical values
+  }
+}
+```
+
+```{r}
+set.seed(2)
+base_mcmc_norm <- mcmc(lik, start_par, nsteps = 10000, w = 0.1, print.every = 0, prior = prior_fn_exp) # Use prior argument to add your prior distribution
 head(base_mcmc_norm)
 ```
 
