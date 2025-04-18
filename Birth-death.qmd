@@ -28,11 +28,11 @@ Birth-death models are critical in evolutionary biology and function to help res
 
 ### Objectives for this Module
 
--   **Understand Birth-Death Modeling:** Learn the principles of constant-rate birth-death models and their application in evolutionary biology
+-   **Understand Birth-Death Modeling:** Learn the principles of constant rate birth-death models and their application in evolutionary biology
 
 -   **Simulate Phylogenetic Trees:** Use the diversitree R package to create and visualize evolutionary trees based on speciation and extinction rates
 
--   **Understand and Apply MLEs:** Apply Maximum Likelihood Estimation (MLE) to determine speciation and extinction rates, evaluating model fit.
+-   **Understand and Apply MLEs:** Apply Maximum Likelihood Estimation (MLE) to determine speciation and extinction rates.
 
 -   **Perform Bayesian Analysis with MCMC:** Implement Markov Chain Monte Carlo (MCMC) methods to explore posterior distributions (where each value depends only on the previous one) for model parameters
 
@@ -50,7 +50,7 @@ These models assume that **each event** (speciation or extinction) **follows a [
 
 Poisson processes model **random events over time or space**, especially **count data** ... i.e.:
 
--   the number of car accidents at a site or in an area
+-   Number of kids born in a town per year
 
 -   Number of car accidents at an intersection per year
 
@@ -85,7 +85,7 @@ Birth-death models rely on the **memoryless** property of Markov Chains, where t
 
 In this module we will focus on a specific subclass of Markov Chains:
 
--   **Markov Chain:** A sequence where each value depends only on the previous one
+-   **Markov Chain:** A sequence where each value depends only on the previous one.
 
     -   **Markov Chain Monte Carlo (MCMC):** A method to sample from complex probability distributions by building a Markov chain whose long-term behavior matches the target distribution.
 
@@ -93,7 +93,7 @@ In this module we will focus on a specific subclass of Markov Chains:
 
 ### Why Birth-Death Models Matter
 
-**Understanding the distribution of species and traits across is central to evolutionary biology. Birth-death models help answer questions like:**
+**Understanding the distribution of species and traits across them is central to evolutionary biology. Birth-death models help answer questions like:**
 
 -   Why do some clades have more species than others?
 
