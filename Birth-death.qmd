@@ -341,11 +341,11 @@ plot(phylo_small, no.margin = TRUE, show.tip.label = FALSE) # plot our new tree 
 
 Given the tree `phylo_small`, we're going to use Maximum Likelihood Estimation (MLE) to estimate the parameters ($λ$ and $µ$) with values that maximize the probability of observing our `phylo_small` tree.
 
-Earlier, we showed how we could compare likelihood functions with different parameter values inputted in order to assess how well those given parameter value maximize the likelihood of observing the `phylo` data. We could make an algorithm that searches for the parameter values that maximize this likelihood score for `phylo_small`. This function would would iteratively adjust parameters in search of values that minimize the negative log-likelihood (which translates to maximizing the likelihood if you recall how log values work!)
+Earlier, we showed how we could compare likelihood functions with different parameter values inputted in order to assess how well those given parameter values maximize the likelihood of observing the `phylo` data. We could make an algorithm that searches for the parameter values that maximize this likelihood score for `phylo_small`. This function would would iteratively adjust parameters in search of values that minimize the negative log-likelihood (which translates to maximizing the likelihood).
 
 This optimization process adjusts the parameters, beginning with the initial ones we provide, and then continuously updates the parameters in order to "improve" the likelihood. This process eventually converges on a final solution, which is the output we get in the form of a set of parameters. The process ceases (or "converges") when adjustments to the parameters no longer change/improve the likelihood significantly.
 
-The following likelihood surface plot might be helpful in giving you a rough idea of what point the algorithm might come when searching for the optimized parameters for `phylo_small`. You can get an idea from this plot what values we might might more or less expect when we finally perform our analysis. Plus, it's fun to look at!
+The following likelihood surface plot might be helpful in giving you a rough idea of what point the algorithm might converge on when searching for the optimized parameters for `phylo_small`. You can get an idea from this plot which values we might more or less expect when we finally perform our analysis. Plus, it's fun to look at!
 
 ```{r}
 lambda_vals <- seq(0.1, 0.3, length.out = 50) # define a range for lambda values
