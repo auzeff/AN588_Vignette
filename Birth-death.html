@@ -206,9 +206,9 @@ window.Quarto = {
 <section id="objectives-for-this-module" class="level3">
 <h3 class="anchored" data-anchor-id="objectives-for-this-module">Objectives for this Module</h3>
 <ul>
-<li><p><strong>Understand Birth-Death Modeling:</strong> Learn the principles of constant-rate birth-death models and their application in evolutionary biology</p></li>
+<li><p><strong>Understand Birth-Death Modeling:</strong> Learn the principles of constant rate birth-death models and their application in evolutionary biology</p></li>
 <li><p><strong>Simulate Phylogenetic Trees:</strong> Use the diversitree R package to create and visualize evolutionary trees based on speciation and extinction rates</p></li>
-<li><p><strong>Understand and Apply MLEs:</strong> Apply Maximum Likelihood Estimation (MLE) to determine speciation and extinction rates, evaluating model fit.</p></li>
+<li><p><strong>Understand and Apply MLEs:</strong> Apply Maximum Likelihood Estimation (MLE) to determine speciation and extinction rates</p></li>
 <li><p><strong>Perform Bayesian Analysis with MCMC:</strong> Implement Markov Chain Monte Carlo (MCMC) methods to explore posterior distributions (where each value depends only on the previous one) for model parameters</p></li>
 </ul>
 <hr>
@@ -223,7 +223,7 @@ window.Quarto = {
 <p>These models assume that <strong>each event</strong> (speciation or extinction) <strong>follows a <a href="https://www.probabilitycourse.com/chapter11/11_1_2_basic_concepts_of_the_poisson_process.php">Poisson</a> process</strong>, meaning that the time to the next event follows an <strong>exponential distribution</strong> with a rate of <span class="math inline">\(λ + μ\)</span>. The probability that the next event is speciation is <span class="math inline">\(λ/(μ + λ)\)</span>, while the probability of extinction is <span class="math inline">\(μ/(μ + λ)\)</span>.</p>
 <p>Poisson processes model <strong>random events over time or space</strong>, especially <strong>count data</strong> … i.e.:</p>
 <ul>
-<li><p>the number of car accidents at a site or in an area</p></li>
+<li><p>Number of kids born in a town per year</p></li>
 <li><p>Number of car accidents at an intersection per year</p></li>
 <li><p>Number of emails you get per hour</p></li>
 </ul>
@@ -270,7 +270,7 @@ Another Example - Rolling a Die!
 </div>
 <p>In this module we will focus on a specific subclass of Markov Chains:</p>
 <ul>
-<li><p><strong>Markov Chain:</strong> A sequence where each value depends only on the previous one</p>
+<li><p><strong>Markov Chain:</strong> A sequence where each value depends only on the previous one.</p>
 <ul>
 <li><strong>Markov Chain Monte Carlo (MCMC):</strong> A method to sample from complex probability distributions by building a Markov chain whose long-term behavior matches the target distribution.</li>
 </ul></li>
@@ -279,7 +279,7 @@ Another Example - Rolling a Die!
 </section>
 <section id="why-birth-death-models-matter" class="level3">
 <h3 class="anchored" data-anchor-id="why-birth-death-models-matter">Why Birth-Death Models Matter</h3>
-<p><strong>Understanding the distribution of species and traits across is central to evolutionary biology. Birth-death models help answer questions like:</strong></p>
+<p><strong>Understanding the distribution of species and traits across them is central to evolutionary biology. Birth-death models help answer questions like:</strong></p>
 <ul>
 <li><p>Why do some clades have more species than others?</p></li>
 <li><p>How do extinction rates vary across different evolutionary lineages?</p></li>
@@ -528,12 +528,12 @@ Solution (updated)
 <section id="likelihood-functions" class="level2">
 <h2 class="anchored" data-anchor-id="likelihood-functions">Likelihood functions</h2>
 <p>First things first, we need to construct a likelihood function. The likelihood function of a birth-death model estimates the probability of observing a given phylogenetic tree under the assumed rates of speciation and extinction. It will form the backbone of both of our primary analysis methods.</p>
-<p>For each branching event occurring at time <span class="math inline">\(t_i\)</span>, we define:</p>
+<p>For each branching event occurring at time <span class="math inline">\(t_i\)</span> (the i-th branching event), we define:</p>
 <ul>
 <li><p><span class="math inline">\(p_o(t_i)\)</span>: Probability that a lineage goes extinct before time <span class="math inline">\(t_i\)</span></p></li>
-<li><p><span class="math inline">\(p_o(t_i)\)</span>: Probability that a lineage survives and splits by <span class="math inline">\(t_i\)</span></p></li>
+<li><p><span class="math inline">\(p_1(t_i)\)</span>: Probability that a lineage survives and splits by <span class="math inline">\(t_i\)</span></p></li>
 </ul>
-<p>These functions are derived from and allow for model-fitting to empirical phylogenetic data. In our case, these variables will factor into the beautiful and not at all confusing equation derived in Nee et al.&nbsp;(1994):</p>
+<p>These probabilities are derived from the functions of λ and µ, which allow for model-fitting to empirical phylogenetic data. In our case, these variables will factor into the beautiful and not at all confusing equation derived in Nee et al.&nbsp;(1994):</p>
 <p><span class="math display">\[
 lik=(N-1)!\lambda^{N-2}\left\{ \prod_{i=3}^{N}P(t_i,T) \right\}(1-u_{x_2})^2\prod_{i=3}^{N}(1-u_{x_i})
 \]</span><br>
@@ -876,7 +876,7 @@ Solution
 </div>
 <p>We can then get the likelihood value of this current value:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb48"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a>current_par <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fu">coef</span>(fit)[[<span class="dv">1</span>]], <span class="fu">coef</span>(fit)[[<span class="dv">2</span>]])</span>
+<div class="sourceCode cell-code" id="cb48"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a>current_par <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fu">coef</span>(fit)[[<span class="dv">1</span>]], <span class="fu">coef</span>(fit)[[<span class="dv">2</span>]]) <span class="co"># Use indexing to extract the values for lambda and mu</span></span>
 <span id="cb48-2"><a href="#cb48-2" aria-hidden="true" tabindex="-1"></a>current_lik <span class="ot">&lt;-</span> <span class="fu">lik</span>(current_par)</span>
 <span id="cb48-3"><a href="#cb48-3" aria-hidden="true" tabindex="-1"></a>current_lik</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -886,8 +886,8 @@ Solution
 <p>Our next proposed value can be a random value that is 0.1 steps away. We can denote this step variable as <code>w</code> . Please note that parameters in our case cannot be negative since you can’t have a negative rate of speciation and extinction.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb50"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">2</span>)</span>
-<span id="cb50-2"><a href="#cb50-2" aria-hidden="true" tabindex="-1"></a>w <span class="ot">=</span> <span class="fl">0.1</span></span>
-<span id="cb50-3"><a href="#cb50-3" aria-hidden="true" tabindex="-1"></a>proposal_par <span class="ot">&lt;-</span> current_par <span class="sc">+</span> <span class="fu">runif</span>(<span class="dv">2</span>, <span class="sc">-</span>w, w)</span>
+<span id="cb50-2"><a href="#cb50-2" aria-hidden="true" tabindex="-1"></a>w <span class="ot">=</span> <span class="fl">0.1</span> <span class="co"># We assume that the maximum step size for each rate is 0.1</span></span>
+<span id="cb50-3"><a href="#cb50-3" aria-hidden="true" tabindex="-1"></a>proposal_par <span class="ot">&lt;-</span> current_par <span class="sc">+</span> <span class="fu">runif</span>(<span class="dv">2</span>, <span class="sc">-</span>w, w) <span class="co"># Generates 2 random numbers between -w and w</span></span>
 <span id="cb50-4"><a href="#cb50-4" aria-hidden="true" tabindex="-1"></a>proposal_par <span class="co"># Make sure that the parameters are not negative!</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 0.02414114 0.05279102</code></pre>
@@ -911,7 +911,7 @@ log r=logL(proposal)−logL(current)
 \]</span></p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb54"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb54-1"><a href="#cb54-1" aria-hidden="true" tabindex="-1"></a>log_r <span class="ot">&lt;-</span> proposal_lik <span class="sc">-</span> current_lik</span>
-<span id="cb54-2"><a href="#cb54-2" aria-hidden="true" tabindex="-1"></a>r <span class="ot">&lt;-</span> <span class="fu">exp</span>(log_r)</span>
+<span id="cb54-2"><a href="#cb54-2" aria-hidden="true" tabindex="-1"></a>r <span class="ot">&lt;-</span> <span class="fu">exp</span>(log_r) <span class="co"># Since everything is in log, we use exp() to show us the actual value</span></span>
 <span id="cb54-3"><a href="#cb54-3" aria-hidden="true" tabindex="-1"></a>r</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 1.61056e-39</code></pre>
@@ -923,7 +923,9 @@ log r=logL(proposal)−logL(current)
 <span id="cb56-2"><a href="#cb56-2" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="fu">runif</span>(<span class="dv">1</span>) <span class="sc">&lt;</span> r) { <span class="co"># we take a random value from a uniform probability distribution that goes from 0 to 1 and compare it to r</span></span>
 <span id="cb56-3"><a href="#cb56-3" aria-hidden="true" tabindex="-1"></a>      current_par <span class="ot">&lt;-</span> proposal_par</span>
 <span id="cb56-4"><a href="#cb56-4" aria-hidden="true" tabindex="-1"></a>      current_lik <span class="ot">&lt;-</span> proposal_lik</span>
-<span id="cb56-5"><a href="#cb56-5" aria-hidden="true" tabindex="-1"></a>    }</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb56-5"><a href="#cb56-5" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb56-6"><a href="#cb56-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb56-7"><a href="#cb56-7" aria-hidden="true" tabindex="-1"></a><span class="co"># If r &gt;1, any value from runif(1) will be smaller than r, hence it will always be accepted</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>What this code does is:</p>
 <ol type="1">
@@ -938,7 +940,7 @@ log r=logL(proposal)−logL(current)
 <pre><code>[1] 14.80924</code></pre>
 </div>
 </div>
-<p>If we repeat this process many many times, essentially creating a “random walk” along the parameter space, we will eventually get the posterior distribution!</p>
+<p>If we repeat this process many many times, essentially creating a “random walk” along the parameter space, we will eventually get closer to the area where the “real values” are (a.k.a the posterior distribution)!</p>
 <p>You must have noticed that when introducing the Bayesian nature of MCMC, we mentioned prior distributions and how these previous assumptions can change how the prior distribution presents itself. The prior directly shapes the posterior by increasing or decreasing the probability of visiting a particular parameter region.</p>
 <p>We can create a function that takes this into account. We want a function that can take in the value of both of the parameters. It then needs to get their probability based on a specific probabiliity distribution - which in our example will be a normal distribution - and multiply them to get a <strong>joint prior</strong>. We can do this if we assume that λ and μ are <strong>independent.</strong></p>
 <p><span class="math display">\[
@@ -948,21 +950,25 @@ P(λ,μ)=P(λ)⋅P(μ)
 <div class="sourceCode cell-code" id="cb59"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb59-1"><a href="#cb59-1" aria-hidden="true" tabindex="-1"></a>prior_fn_normal <span class="ot">&lt;-</span> <span class="cf">function</span>(par) { <span class="co"># par = c(lambda, mu)</span></span>
 <span id="cb59-2"><a href="#cb59-2" aria-hidden="true" tabindex="-1"></a>  lambda <span class="ot">&lt;-</span> par[<span class="dv">1</span>]</span>
 <span id="cb59-3"><a href="#cb59-3" aria-hidden="true" tabindex="-1"></a>  mu <span class="ot">&lt;-</span> par[<span class="dv">2</span>]</span>
-<span id="cb59-4"><a href="#cb59-4" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (lambda <span class="sc">&gt;</span> <span class="dv">0</span> <span class="sc">&amp;&amp;</span> mu <span class="sc">&gt;</span> <span class="dv">0</span> <span class="sc">&amp;&amp;</span> mu <span class="sc">&lt;</span> lambda) {</span>
-<span id="cb59-5"><a href="#cb59-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">return</span>(<span class="fu">dnorm</span>(lambda, <span class="at">mean =</span> <span class="fl">0.1</span>, <span class="at">sd =</span> <span class="fl">0.03</span>) <span class="sc">*</span> <span class="fu">dnorm</span>(lambda, <span class="at">mean =</span> <span class="fl">0.03</span>, <span class="at">sd =</span> <span class="fl">0.02</span>)) <span class="co"># Multiply these distributions to join them</span></span>
-<span id="cb59-6"><a href="#cb59-6" aria-hidden="true" tabindex="-1"></a>  } <span class="cf">else</span> {</span>
-<span id="cb59-7"><a href="#cb59-7" aria-hidden="true" tabindex="-1"></a>    <span class="fu">return</span>(<span class="dv">0</span>)  <span class="co"># Do not allow impossible or illogical values</span></span>
-<span id="cb59-8"><a href="#cb59-8" aria-hidden="true" tabindex="-1"></a>  }</span>
-<span id="cb59-9"><a href="#cb59-9" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb59-10"><a href="#cb59-10" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb59-4"><a href="#cb59-4" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (lambda <span class="sc">&gt;</span> <span class="dv">0</span> <span class="sc">&amp;&amp;</span> mu <span class="sc">&gt;</span> <span class="dv">0</span> <span class="sc">&amp;&amp;</span> mu <span class="sc">&lt;</span> lambda) { <span class="co"># We assume that net diversification rate is positive so mu can't be higher than lambda</span></span>
+<span id="cb59-5"><a href="#cb59-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">return</span>(<span class="fu">dnorm</span>(lambda, <span class="at">mean =</span> <span class="fl">0.1</span>, <span class="at">sd =</span> <span class="fl">0.03</span>) <span class="sc">*</span> <span class="fu">dnorm</span>(mu, <span class="at">mean =</span> <span class="fl">0.03</span>, <span class="at">sd =</span> <span class="fl">0.02</span>)) </span>
+<span id="cb59-6"><a href="#cb59-6" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Multiply these distributions to join them</span></span>
+<span id="cb59-7"><a href="#cb59-7" aria-hidden="true" tabindex="-1"></a>    <span class="co"># The mean were chosen to be the initial parameters used to create the tree</span></span>
+<span id="cb59-8"><a href="#cb59-8" aria-hidden="true" tabindex="-1"></a>    <span class="co"># sd values were arbitrary decisions</span></span>
+<span id="cb59-9"><a href="#cb59-9" aria-hidden="true" tabindex="-1"></a>  } <span class="cf">else</span> {</span>
+<span id="cb59-10"><a href="#cb59-10" aria-hidden="true" tabindex="-1"></a>    <span class="fu">return</span>(<span class="dv">0</span>)  <span class="co"># Do not allow impossible or illogical values</span></span>
+<span id="cb59-11"><a href="#cb59-11" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb59-12"><a href="#cb59-12" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb59-13"><a href="#cb59-13" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>This then affects the current likelihood values by:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb60"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb60-1"><a href="#cb60-1" aria-hidden="true" tabindex="-1"></a>current_lik <span class="ot">&lt;-</span> current_lik <span class="sc">+</span> <span class="fu">log</span>(<span class="fu">prior_fn_normal</span>(current_par)) <span class="co"># Posterior = Prior x Likelihood but eveerything is in log</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb60"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb60-1"><a href="#cb60-1" aria-hidden="true" tabindex="-1"></a>current_lik <span class="ot">&lt;-</span> current_lik <span class="sc">+</span> <span class="fu">log</span>(<span class="fu">prior_fn_normal</span>(current_par)) <span class="co"># Posterior = Prior x Likelihood but eveerything is in log so we just add them</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
+<p>Recall that in the Bayes Theorem formula we need to divide <em>Likelihood</em> by <em>Marginal likelihood</em> or <em>Evidence</em>. However, in the Metropolis-Hastings algorithm we are working with the acceptance ratio <code>r</code>. When making this calculation, the <em>Marginal likelihood</em> is present in both the current and proposed posterior value so the <em>Marginal</em> value is cancelled out.</p>
 <p>To put it all together, we come up with our custom MCMC R function:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb61"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb61-1"><a href="#cb61-1" aria-hidden="true" tabindex="-1"></a>custom_mcmc <span class="ot">&lt;-</span> <span class="cf">function</span>(likelihood_fn, start, <span class="at">nsteps =</span> <span class="dv">100000</span>, <span class="at">w =</span> <span class="fu">c</span>(<span class="fl">0.1</span>, <span class="fl">0.1</span>), <span class="at">prior_fn =</span> <span class="cn">NULL</span>) {</span>
+<div class="sourceCode cell-code" id="cb61"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb61-1"><a href="#cb61-1" aria-hidden="true" tabindex="-1"></a>custom_mcmc <span class="ot">&lt;-</span> <span class="cf">function</span>(likelihood_fn, start, <span class="at">nsteps =</span> <span class="dv">100000</span>, <span class="at">w =</span> <span class="fl">0.1</span>, <span class="at">prior_fn =</span> <span class="cn">NULL</span>) {</span>
 <span id="cb61-2"><a href="#cb61-2" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Initialize matrix to hold samples for lambda, mu, and log-likelihood</span></span>
 <span id="cb61-3"><a href="#cb61-3" aria-hidden="true" tabindex="-1"></a>  samples <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="cn">NA</span>, <span class="at">nrow =</span> nsteps, <span class="at">ncol =</span> <span class="dv">3</span>)</span>
 <span id="cb61-4"><a href="#cb61-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">colnames</span>(samples) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"lambda"</span>, <span class="st">"mu"</span>, <span class="st">"log_lik"</span>)</span>
@@ -977,49 +983,50 @@ P(λ,μ)=P(λ)⋅P(μ)
 <span id="cb61-13"><a href="#cb61-13" aria-hidden="true" tabindex="-1"></a>    current_lik <span class="ot">&lt;-</span> current_lik <span class="sc">+</span> <span class="fu">log</span>(<span class="fu">prior_fn</span>(current_par))</span>
 <span id="cb61-14"><a href="#cb61-14" aria-hidden="true" tabindex="-1"></a>  }</span>
 <span id="cb61-15"><a href="#cb61-15" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb61-16"><a href="#cb61-16" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Store initial log-likelihood</span></span>
+<span id="cb61-16"><a href="#cb61-16" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Store initial log-likelihood in row 1 column 3</span></span>
 <span id="cb61-17"><a href="#cb61-17" aria-hidden="true" tabindex="-1"></a>  samples[<span class="dv">1</span>, <span class="dv">3</span>] <span class="ot">&lt;-</span> current_lik</span>
 <span id="cb61-18"><a href="#cb61-18" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb61-19"><a href="#cb61-19" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">2</span><span class="sc">:</span>nsteps) {</span>
-<span id="cb61-20"><a href="#cb61-20" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Propose new values for lambda and mu</span></span>
-<span id="cb61-21"><a href="#cb61-21" aria-hidden="true" tabindex="-1"></a>    proposal_par <span class="ot">&lt;-</span> current_par <span class="sc">+</span> <span class="fu">runif</span>(<span class="dv">2</span>, <span class="sc">-</span>w, w) <span class="co"># Generates 2 random numbers between -w and w</span></span>
-<span id="cb61-22"><a href="#cb61-22" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb61-23"><a href="#cb61-23" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Check that proposed values are positive and finite (otherwise they won't work in the likelihood function)</span></span>
-<span id="cb61-24"><a href="#cb61-24" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> (<span class="fu">any</span>(proposal_par <span class="sc">&lt;=</span> <span class="dv">0</span>) <span class="sc">||</span> <span class="fu">any</span>(<span class="sc">!</span><span class="fu">is.finite</span>(proposal_par))) {</span>
-<span id="cb61-25"><a href="#cb61-25" aria-hidden="true" tabindex="-1"></a>      samples[i, ] <span class="ot">&lt;-</span> <span class="fu">c</span>(current_par, current_lik)  <span class="co"># Reject and stay at current state</span></span>
-<span id="cb61-26"><a href="#cb61-26" aria-hidden="true" tabindex="-1"></a>      <span class="cf">next</span></span>
-<span id="cb61-27"><a href="#cb61-27" aria-hidden="true" tabindex="-1"></a>    }</span>
-<span id="cb61-28"><a href="#cb61-28" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb61-29"><a href="#cb61-29" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Evaluate likelihood at the proposed values</span></span>
-<span id="cb61-30"><a href="#cb61-30" aria-hidden="true" tabindex="-1"></a>    proposal_lik <span class="ot">&lt;-</span> <span class="fu">likelihood_fn</span>(proposal_par)</span>
-<span id="cb61-31"><a href="#cb61-31" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb61-32"><a href="#cb61-32" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Include prior if specified</span></span>
-<span id="cb61-33"><a href="#cb61-33" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> (<span class="sc">!</span><span class="fu">is.null</span>(prior_fn)) {</span>
-<span id="cb61-34"><a href="#cb61-34" aria-hidden="true" tabindex="-1"></a>      proposal_lik <span class="ot">&lt;-</span> proposal_lik <span class="sc">+</span> <span class="fu">log</span>(<span class="fu">prior_fn</span>(proposal_par))</span>
-<span id="cb61-35"><a href="#cb61-35" aria-hidden="true" tabindex="-1"></a>    }</span>
-<span id="cb61-36"><a href="#cb61-36" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb61-37"><a href="#cb61-37" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Compute acceptance ratio (on log scale)</span></span>
-<span id="cb61-38"><a href="#cb61-38" aria-hidden="true" tabindex="-1"></a>    log_r <span class="ot">&lt;-</span> proposal_lik <span class="sc">-</span> current_lik</span>
-<span id="cb61-39"><a href="#cb61-39" aria-hidden="true" tabindex="-1"></a>    r <span class="ot">&lt;-</span> <span class="fu">exp</span>(log_r)</span>
-<span id="cb61-40"><a href="#cb61-40" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb61-41"><a href="#cb61-41" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Accept or reject the proposal</span></span>
-<span id="cb61-42"><a href="#cb61-42" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> (<span class="fu">runif</span>(<span class="dv">1</span>) <span class="sc">&lt;</span> r) {</span>
-<span id="cb61-43"><a href="#cb61-43" aria-hidden="true" tabindex="-1"></a>      current_par <span class="ot">&lt;-</span> proposal_par</span>
-<span id="cb61-44"><a href="#cb61-44" aria-hidden="true" tabindex="-1"></a>      current_lik <span class="ot">&lt;-</span> proposal_lik</span>
-<span id="cb61-45"><a href="#cb61-45" aria-hidden="true" tabindex="-1"></a>    }</span>
-<span id="cb61-46"><a href="#cb61-46" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb61-47"><a href="#cb61-47" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Store the current state (either new or previous) and log-posterior</span></span>
-<span id="cb61-48"><a href="#cb61-48" aria-hidden="true" tabindex="-1"></a>    samples[i, ] <span class="ot">&lt;-</span> <span class="fu">c</span>(current_par, current_lik)</span>
-<span id="cb61-49"><a href="#cb61-49" aria-hidden="true" tabindex="-1"></a>  }</span>
-<span id="cb61-50"><a href="#cb61-50" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb61-51"><a href="#cb61-51" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Return results as a data frame</span></span>
-<span id="cb61-52"><a href="#cb61-52" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(<span class="fu">as.data.frame</span>(samples))</span>
-<span id="cb61-53"><a href="#cb61-53" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb61-19"><a href="#cb61-19" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">2</span><span class="sc">:</span>nsteps) { <span class="co"># We start in position 2 because the first column has already been filled with our initial guesses</span></span>
+<span id="cb61-20"><a href="#cb61-20" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb61-21"><a href="#cb61-21" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Propose new values for lambda and mu</span></span>
+<span id="cb61-22"><a href="#cb61-22" aria-hidden="true" tabindex="-1"></a>    proposal_par <span class="ot">&lt;-</span> current_par <span class="sc">+</span> <span class="fu">runif</span>(<span class="dv">2</span>, <span class="sc">-</span>w, w) <span class="co"># Generates 2 random numbers between -w and w</span></span>
+<span id="cb61-23"><a href="#cb61-23" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb61-24"><a href="#cb61-24" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Check that proposed values are positive and finite (otherwise they won't work in the likelihood function)</span></span>
+<span id="cb61-25"><a href="#cb61-25" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> (<span class="fu">any</span>(proposal_par <span class="sc">&lt;=</span> <span class="dv">0</span>) <span class="sc">||</span> <span class="fu">any</span>(<span class="sc">!</span><span class="fu">is.finite</span>(proposal_par))) { <span class="co"># || means OR</span></span>
+<span id="cb61-26"><a href="#cb61-26" aria-hidden="true" tabindex="-1"></a>      samples[i, ] <span class="ot">&lt;-</span> <span class="fu">c</span>(current_par, current_lik)  <span class="co"># Reject and stay at current state</span></span>
+<span id="cb61-27"><a href="#cb61-27" aria-hidden="true" tabindex="-1"></a>      <span class="cf">next</span></span>
+<span id="cb61-28"><a href="#cb61-28" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb61-29"><a href="#cb61-29" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb61-30"><a href="#cb61-30" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Evaluate likelihood at the proposed values</span></span>
+<span id="cb61-31"><a href="#cb61-31" aria-hidden="true" tabindex="-1"></a>    proposal_lik <span class="ot">&lt;-</span> <span class="fu">likelihood_fn</span>(proposal_par)</span>
+<span id="cb61-32"><a href="#cb61-32" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb61-33"><a href="#cb61-33" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Include prior if specified</span></span>
+<span id="cb61-34"><a href="#cb61-34" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> (<span class="sc">!</span><span class="fu">is.null</span>(prior_fn)) {</span>
+<span id="cb61-35"><a href="#cb61-35" aria-hidden="true" tabindex="-1"></a>      proposal_lik <span class="ot">&lt;-</span> proposal_lik <span class="sc">+</span> <span class="fu">log</span>(<span class="fu">prior_fn</span>(proposal_par))</span>
+<span id="cb61-36"><a href="#cb61-36" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb61-37"><a href="#cb61-37" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb61-38"><a href="#cb61-38" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Compute acceptance ratio (on log scale)</span></span>
+<span id="cb61-39"><a href="#cb61-39" aria-hidden="true" tabindex="-1"></a>    log_r <span class="ot">&lt;-</span> proposal_lik <span class="sc">-</span> current_lik</span>
+<span id="cb61-40"><a href="#cb61-40" aria-hidden="true" tabindex="-1"></a>    r <span class="ot">&lt;-</span> <span class="fu">exp</span>(log_r)</span>
+<span id="cb61-41"><a href="#cb61-41" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb61-42"><a href="#cb61-42" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Accept or reject the proposal based on r&gt;1 or r&lt;1</span></span>
+<span id="cb61-43"><a href="#cb61-43" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> (<span class="fu">runif</span>(<span class="dv">1</span>) <span class="sc">&lt;</span> r) {</span>
+<span id="cb61-44"><a href="#cb61-44" aria-hidden="true" tabindex="-1"></a>      current_par <span class="ot">&lt;-</span> proposal_par</span>
+<span id="cb61-45"><a href="#cb61-45" aria-hidden="true" tabindex="-1"></a>      current_lik <span class="ot">&lt;-</span> proposal_lik</span>
+<span id="cb61-46"><a href="#cb61-46" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb61-47"><a href="#cb61-47" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb61-48"><a href="#cb61-48" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Store the current state (either new or previous) and log-posterior</span></span>
+<span id="cb61-49"><a href="#cb61-49" aria-hidden="true" tabindex="-1"></a>    samples[i, ] <span class="ot">&lt;-</span> <span class="fu">c</span>(current_par, current_lik)</span>
+<span id="cb61-50"><a href="#cb61-50" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb61-51"><a href="#cb61-51" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb61-52"><a href="#cb61-52" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Return results as a data frame</span></span>
+<span id="cb61-53"><a href="#cb61-53" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(<span class="fu">as.data.frame</span>(samples))</span>
+<span id="cb61-54"><a href="#cb61-54" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Let’s use our data to see the posterior distribution we get!</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb62"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb62-1"><a href="#cb62-1" aria-hidden="true" tabindex="-1"></a>start_par <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fu">coef</span>(fit)[[<span class="dv">1</span>]], <span class="fu">coef</span>(fit)[[<span class="dv">2</span>]])</span>
-<span id="cb62-2"><a href="#cb62-2" aria-hidden="true" tabindex="-1"></a>test_mcmc <span class="ot">&lt;-</span> <span class="fu">custom_mcmc</span>(lik, start_par, <span class="at">w =</span> <span class="fu">c</span>(<span class="fl">0.1</span>, <span class="fl">0.1</span>))</span>
+<span id="cb62-2"><a href="#cb62-2" aria-hidden="true" tabindex="-1"></a>test_mcmc <span class="ot">&lt;-</span> <span class="fu">custom_mcmc</span>(lik, start_par, <span class="at">w =</span> <span class="fl">0.1</span>)</span>
 <span id="cb62-3"><a href="#cb62-3" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(test_mcmc)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>      lambda         mu  log_lik
@@ -1050,11 +1057,27 @@ P(λ,μ)=P(λ)⋅P(μ)
 </div>
 </div>
 <p>We can see that everything aligns pretty well!</p>
+<p>In the figure, bars at the bottom of each distribution and shaded areas correspond to the 95% credibility intervals.</p>
+<p><strong>How will this change if we give it an informative prior distribution?</strong></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb65"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb65-1"><a href="#cb65-1" aria-hidden="true" tabindex="-1"></a>test_mcmc_prior <span class="ot">&lt;-</span> <span class="fu">custom_mcmc</span>(lik, start_par, <span class="at">w =</span> <span class="fl">0.1</span>, <span class="at">prior_fn =</span> prior_fn_normal) <span class="co"># Add function without ()</span></span>
+<span id="cb65-2"><a href="#cb65-2" aria-hidden="true" tabindex="-1"></a>test_mcmc_prior<span class="sc">$</span>r <span class="ot">&lt;-</span> test_mcmc_prior<span class="sc">$</span>lambda <span class="sc">-</span> test_mcmc_prior<span class="sc">$</span>mu </span>
+<span id="cb65-3"><a href="#cb65-3" aria-hidden="true" tabindex="-1"></a>col <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"#eaab00"</span>, <span class="st">"#004165"</span>, <span class="st">"#618e02"</span>)</span>
+<span id="cb65-4"><a href="#cb65-4" aria-hidden="true" tabindex="-1"></a><span class="fu">profiles.plot</span>(test_mcmc_prior[<span class="fu">c</span>(<span class="st">"lambda"</span>, <span class="st">"mu"</span>, <span class="st">"r"</span>)], <span class="at">col.line =</span> col, <span class="at">las =</span> <span class="dv">1</span>, <span class="at">legend.pos =</span> <span class="st">"topright"</span>)</span>
+<span id="cb65-5"><a href="#cb65-5" aria-hidden="true" tabindex="-1"></a><span class="fu">abline</span>(<span class="at">v=</span><span class="fu">c</span>(<span class="fl">0.1</span>, <span class="fl">0.03</span>, <span class="fl">0.07</span>), <span class="at">col =</span> col, <span class="at">lty =</span> <span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Birth-death_files/figure-html/unnamed-chunk-38-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
 <p>However, in reality, we can skip all of this and use the <code>mcmc()</code> function from <code>diversitree</code> R to avoid writing our own MCMC algorithm from scratch:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb65"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb65-1"><a href="#cb65-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">2</span>)</span>
-<span id="cb65-2"><a href="#cb65-2" aria-hidden="true" tabindex="-1"></a>base_mcmc <span class="ot">&lt;-</span> <span class="fu">mcmc</span>(lik, start_par, <span class="at">nsteps =</span> <span class="dv">10000</span>, <span class="at">w =</span> <span class="fl">0.1</span>, <span class="at">print.every =</span> <span class="dv">0</span>)</span>
-<span id="cb65-3"><a href="#cb65-3" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(base_mcmc)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb66"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb66-1"><a href="#cb66-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">2</span>)</span>
+<span id="cb66-2"><a href="#cb66-2" aria-hidden="true" tabindex="-1"></a>dt_mcmc <span class="ot">&lt;-</span> <span class="fu">mcmc</span>(lik, start_par, <span class="at">nsteps =</span> <span class="dv">10000</span>, <span class="at">w =</span> <span class="fl">0.1</span>, <span class="at">print.every =</span> <span class="dv">0</span>) <span class="co"># Assuming uninformative prior so we won't add prior</span></span>
+<span id="cb66-3"><a href="#cb66-3" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(dt_mcmc)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>  i     lambda           mu        p
 1 1 0.07425992 0.0143710217 13.30639
@@ -1067,19 +1090,56 @@ P(λ,μ)=P(λ)⋅P(μ)
 </div>
 <p>And plot!</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb67"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb67-1"><a href="#cb67-1" aria-hidden="true" tabindex="-1"></a>base_mcmc<span class="sc">$</span>r <span class="ot">&lt;-</span> base_mcmc<span class="sc">$</span>lambda <span class="sc">-</span> base_mcmc<span class="sc">$</span>mu</span>
-<span id="cb67-2"><a href="#cb67-2" aria-hidden="true" tabindex="-1"></a>col <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"#eaab00"</span>, <span class="st">"#004165"</span>, <span class="st">"#618e02"</span>)</span>
-<span id="cb67-3"><a href="#cb67-3" aria-hidden="true" tabindex="-1"></a><span class="fu">profiles.plot</span>(base_mcmc[<span class="fu">c</span>(<span class="st">"lambda"</span>, <span class="st">"mu"</span>, <span class="st">"r"</span>)], <span class="at">col.line =</span> col, <span class="at">las =</span> <span class="dv">1</span>, <span class="at">legend.pos =</span> <span class="st">"topright"</span>)</span>
-<span id="cb67-4"><a href="#cb67-4" aria-hidden="true" tabindex="-1"></a><span class="fu">abline</span>(<span class="at">v=</span><span class="fu">c</span>(<span class="fl">0.1</span>, <span class="fl">0.03</span>, <span class="fl">0.07</span>), <span class="at">col =</span> col, <span class="at">lty =</span> <span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb68"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb68-1"><a href="#cb68-1" aria-hidden="true" tabindex="-1"></a>dt_mcmc<span class="sc">$</span>r <span class="ot">&lt;-</span> dt_mcmc<span class="sc">$</span>lambda <span class="sc">-</span> dt_mcmc<span class="sc">$</span>mu</span>
+<span id="cb68-2"><a href="#cb68-2" aria-hidden="true" tabindex="-1"></a>col <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"#eaab00"</span>, <span class="st">"#004165"</span>, <span class="st">"#618e02"</span>)</span>
+<span id="cb68-3"><a href="#cb68-3" aria-hidden="true" tabindex="-1"></a><span class="fu">profiles.plot</span>(dt_mcmc[<span class="fu">c</span>(<span class="st">"lambda"</span>, <span class="st">"mu"</span>, <span class="st">"r"</span>)], <span class="at">col.line =</span> col, <span class="at">las =</span> <span class="dv">1</span>, <span class="at">legend.pos =</span> <span class="st">"topright"</span>)</span>
+<span id="cb68-4"><a href="#cb68-4" aria-hidden="true" tabindex="-1"></a><span class="fu">abline</span>(<span class="at">v=</span><span class="fu">c</span>(<span class="fl">0.1</span>, <span class="fl">0.03</span>, <span class="fl">0.07</span>), <span class="at">col =</span> col, <span class="at">lty =</span> <span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="Birth-death_files/figure-html/unnamed-chunk-39-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="Birth-death_files/figure-html/unnamed-chunk-40-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 </div>
-<p>We can see that both plots are basically identical!</p>
+<p>We can see that both plots were we don’t include priors are basically identical!</p>
+<p>In true practice, we also need to consider the concept of <strong>Burn in<em>.</em></strong> This refers to throwing away some iterations at the beginning of the run since they might not represent the true posterior distribution. <code>mcmc()</code> doesn’t automatically do this nor does it have a parameter to do this, so we would need to do this manually and decide how much burn in we consider the model to have.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb69"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb69-1"><a href="#cb69-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Assuming we have a 20% burn in</span></span>
+<span id="cb69-2"><a href="#cb69-2" aria-hidden="true" tabindex="-1"></a>burn_in <span class="ot">&lt;-</span> <span class="fl">0.2</span></span>
+<span id="cb69-3"><a href="#cb69-3" aria-hidden="true" tabindex="-1"></a>n_burn <span class="ot">&lt;-</span> <span class="fu">floor</span>(<span class="fu">nrow</span>(dt_mcmc) <span class="sc">*</span> burn_in) <span class="co"># Will calculate how many columns to burn</span></span>
+<span id="cb69-4"><a href="#cb69-4" aria-hidden="true" tabindex="-1"></a><span class="co"># We use floor() to round down just in case the result is a float</span></span>
+<span id="cb69-5"><a href="#cb69-5" aria-hidden="true" tabindex="-1"></a>n_burn</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 2000</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb71"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb71-1"><a href="#cb71-1" aria-hidden="true" tabindex="-1"></a>dt_mcmc_burn <span class="ot">&lt;-</span> dt_mcmc[<span class="sc">-</span>(<span class="dv">1</span><span class="sc">:</span>n_burn),] <span class="co"># pick rows 1 through n_burn and remove them from our old sample</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb72"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb72-1"><a href="#cb72-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(dt_mcmc<span class="sc">$</span>lambda, <span class="at">type =</span> <span class="st">"l"</span>, <span class="at">main =</span> <span class="st">"Trace plot for λ"</span>) <span class="co"># Plot trace plot to see each value of lambda picked in each iteration</span></span>
+<span id="cb72-2"><a href="#cb72-2" aria-hidden="true" tabindex="-1"></a><span class="fu">abline</span>(<span class="at">v =</span> <span class="fu">floor</span>(<span class="fl">0.2</span> <span class="sc">*</span> <span class="fu">nrow</span>(dt_mcmc)), <span class="at">col =</span> <span class="st">"red"</span>, <span class="at">lty =</span> <span class="dv">2</span>) <span class="co"># Mark vertical line to see which portions we decided to burn</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Birth-death_files/figure-html/unnamed-chunk-42-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>We can see that in the trace plot shows that, while there is a lot of noise, they are all in the 0.10 mean lambda value. This just means that our initial guesses from MLE weren’t too far from the actual region where the posterior distribution was. We can see how this changes if we do include more ‘outlandish’ initial guesses:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb73"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb73-1"><a href="#cb73-1" aria-hidden="true" tabindex="-1"></a>big_guess <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fl">0.9</span>, <span class="fl">0.5</span>)</span>
+<span id="cb73-2"><a href="#cb73-2" aria-hidden="true" tabindex="-1"></a>dt_mcmc <span class="ot">&lt;-</span> <span class="fu">mcmc</span>(lik, big_guess, <span class="at">nsteps =</span> <span class="dv">10000</span>, <span class="at">w =</span> <span class="fl">0.1</span>, <span class="at">print.every =</span> <span class="dv">0</span>)</span>
+<span id="cb73-3"><a href="#cb73-3" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(dt_mcmc<span class="sc">$</span>lambda, <span class="at">type =</span> <span class="st">"l"</span>, <span class="at">main =</span> <span class="st">"Trace plot for λ"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Birth-death_files/figure-html/unnamed-chunk-43-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>You can see how in the beginning there is an enormous drop, showing not only that <code>mcmc()</code> can guide us to the correct value region and the importance of burn in, which in this case doesn’t need to be as drastic as 20%</p>
 <section id="challenge-6" class="level4">
 <h4 class="anchored" data-anchor-id="challenge-6">Challenge 6</h4>
 <p>Write a function that takes a pair of values and gets their probability based on an <strong>exponential</strong> distribution. Then plug this in into both the custom MCMC function and the one provided by <code>diversitree</code>. How does this information change the figures in the end?</p>
@@ -1096,21 +1156,21 @@ Solution
 <div id="callout-9" class="callout-9-contents callout-collapse collapse">
 <div class="callout-body-container callout-body">
 <div class="cell">
-<div class="sourceCode cell-code" id="cb68"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb68-1"><a href="#cb68-1" aria-hidden="true" tabindex="-1"></a>prior_fn_exp <span class="ot">&lt;-</span> <span class="cf">function</span>(par) {</span>
-<span id="cb68-2"><a href="#cb68-2" aria-hidden="true" tabindex="-1"></a>  lambda <span class="ot">&lt;-</span> par[<span class="dv">1</span>]</span>
-<span id="cb68-3"><a href="#cb68-3" aria-hidden="true" tabindex="-1"></a>  mu <span class="ot">&lt;-</span> par[<span class="dv">2</span>]</span>
-<span id="cb68-4"><a href="#cb68-4" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb68-5"><a href="#cb68-5" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (lambda <span class="sc">&gt;</span> <span class="dv">0</span> <span class="sc">&amp;&amp;</span> mu <span class="sc">&gt;</span> <span class="dv">0</span> <span class="sc">&amp;&amp;</span> mu <span class="sc">&lt;</span> lambda) {</span>
-<span id="cb68-6"><a href="#cb68-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">return</span>(<span class="fu">dexp</span>(lambda, <span class="at">rate =</span> <span class="dv">10</span>) <span class="sc">*</span> <span class="fu">dexp</span>(mu, <span class="at">rate =</span> <span class="dv">10</span>))</span>
-<span id="cb68-7"><a href="#cb68-7" aria-hidden="true" tabindex="-1"></a>  } <span class="cf">else</span> {</span>
-<span id="cb68-8"><a href="#cb68-8" aria-hidden="true" tabindex="-1"></a>    <span class="fu">return</span>(<span class="dv">0</span>)  <span class="co"># Do not allow impossible or illogical values</span></span>
-<span id="cb68-9"><a href="#cb68-9" aria-hidden="true" tabindex="-1"></a>  }</span>
-<span id="cb68-10"><a href="#cb68-10" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb74"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb74-1"><a href="#cb74-1" aria-hidden="true" tabindex="-1"></a>prior_fn_exp <span class="ot">&lt;-</span> <span class="cf">function</span>(par) {</span>
+<span id="cb74-2"><a href="#cb74-2" aria-hidden="true" tabindex="-1"></a>  lambda <span class="ot">&lt;-</span> par[<span class="dv">1</span>]</span>
+<span id="cb74-3"><a href="#cb74-3" aria-hidden="true" tabindex="-1"></a>  mu <span class="ot">&lt;-</span> par[<span class="dv">2</span>]</span>
+<span id="cb74-4"><a href="#cb74-4" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb74-5"><a href="#cb74-5" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (lambda <span class="sc">&gt;</span> <span class="dv">0</span> <span class="sc">&amp;&amp;</span> mu <span class="sc">&gt;</span> <span class="dv">0</span> <span class="sc">&amp;&amp;</span> mu <span class="sc">&lt;</span> lambda) {</span>
+<span id="cb74-6"><a href="#cb74-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">return</span>(<span class="fu">dexp</span>(lambda, <span class="at">rate =</span> <span class="dv">10</span>) <span class="sc">*</span> <span class="fu">dexp</span>(mu, <span class="at">rate =</span> <span class="dv">10</span>)) <span class="co">#rate parameter controls how quickly the probability decays. 10 is actually very fast, showing that there is little variability around my mu and lambda values.</span></span>
+<span id="cb74-7"><a href="#cb74-7" aria-hidden="true" tabindex="-1"></a>  } <span class="cf">else</span> {</span>
+<span id="cb74-8"><a href="#cb74-8" aria-hidden="true" tabindex="-1"></a>    <span class="fu">return</span>(<span class="dv">0</span>)  <span class="co"># Do not allow impossible or illogical values</span></span>
+<span id="cb74-9"><a href="#cb74-9" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb74-10"><a href="#cb74-10" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb69"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb69-1"><a href="#cb69-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">2</span>)</span>
-<span id="cb69-2"><a href="#cb69-2" aria-hidden="true" tabindex="-1"></a>base_mcmc_norm <span class="ot">&lt;-</span> <span class="fu">mcmc</span>(lik, start_par, <span class="at">nsteps =</span> <span class="dv">10000</span>, <span class="at">w =</span> <span class="fl">0.1</span>, <span class="at">print.every =</span> <span class="dv">0</span>, <span class="at">prior =</span> prior_fn_exp)</span>
-<span id="cb69-3"><a href="#cb69-3" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(base_mcmc_norm)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb75"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb75-1"><a href="#cb75-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">2</span>)</span>
+<span id="cb75-2"><a href="#cb75-2" aria-hidden="true" tabindex="-1"></a>base_mcmc_norm <span class="ot">&lt;-</span> <span class="fu">mcmc</span>(lik, start_par, <span class="at">nsteps =</span> <span class="dv">10000</span>, <span class="at">w =</span> <span class="fl">0.1</span>, <span class="at">print.every =</span> <span class="dv">0</span>, <span class="at">prior =</span> prior_fn_exp) <span class="co"># Use prior argument to add your prior distribution</span></span>
+<span id="cb75-3"><a href="#cb75-3" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(base_mcmc_norm)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>  i     lambda           mu        p
 1 1 0.07425992 0.0021851957 60.83500
@@ -1122,14 +1182,14 @@ Solution
 </div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb71"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb71-1"><a href="#cb71-1" aria-hidden="true" tabindex="-1"></a>base_mcmc_norm<span class="sc">$</span>r <span class="ot">&lt;-</span> base_mcmc_norm<span class="sc">$</span>lambda <span class="sc">-</span> base_mcmc_norm<span class="sc">$</span>mu</span>
-<span id="cb71-2"><a href="#cb71-2" aria-hidden="true" tabindex="-1"></a>col <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"#eaab00"</span>, <span class="st">"#004165"</span>, <span class="st">"#618e02"</span>)</span>
-<span id="cb71-3"><a href="#cb71-3" aria-hidden="true" tabindex="-1"></a><span class="fu">profiles.plot</span>(base_mcmc_norm[<span class="fu">c</span>(<span class="st">"lambda"</span>, <span class="st">"mu"</span>, <span class="st">"r"</span>)], <span class="at">col.line =</span> col, <span class="at">las =</span> <span class="dv">1</span>, <span class="at">legend.pos =</span> <span class="st">"topright"</span>)</span>
-<span id="cb71-4"><a href="#cb71-4" aria-hidden="true" tabindex="-1"></a><span class="fu">abline</span>(<span class="at">v=</span><span class="fu">c</span>(<span class="fl">0.1</span>, <span class="fl">0.03</span>, <span class="fl">0.07</span>), <span class="at">col =</span> col, <span class="at">lty =</span> <span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb77"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb77-1"><a href="#cb77-1" aria-hidden="true" tabindex="-1"></a>base_mcmc_norm<span class="sc">$</span>r <span class="ot">&lt;-</span> base_mcmc_norm<span class="sc">$</span>lambda <span class="sc">-</span> base_mcmc_norm<span class="sc">$</span>mu</span>
+<span id="cb77-2"><a href="#cb77-2" aria-hidden="true" tabindex="-1"></a>col <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"#eaab00"</span>, <span class="st">"#004165"</span>, <span class="st">"#618e02"</span>)</span>
+<span id="cb77-3"><a href="#cb77-3" aria-hidden="true" tabindex="-1"></a><span class="fu">profiles.plot</span>(base_mcmc_norm[<span class="fu">c</span>(<span class="st">"lambda"</span>, <span class="st">"mu"</span>, <span class="st">"r"</span>)], <span class="at">col.line =</span> col, <span class="at">las =</span> <span class="dv">1</span>, <span class="at">legend.pos =</span> <span class="st">"topright"</span>)</span>
+<span id="cb77-4"><a href="#cb77-4" aria-hidden="true" tabindex="-1"></a><span class="fu">abline</span>(<span class="at">v=</span><span class="fu">c</span>(<span class="fl">0.1</span>, <span class="fl">0.03</span>, <span class="fl">0.07</span>), <span class="at">col =</span> col, <span class="at">lty =</span> <span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="Birth-death_files/figure-html/unnamed-chunk-42-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="Birth-death_files/figure-html/unnamed-chunk-46-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
