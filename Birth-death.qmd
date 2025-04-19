@@ -557,7 +557,7 @@ proposal_lik
 As directed by the Metropolis-Hastings part of the algorithm, we now need to decide if to accept or reject this new set of parameters. As mentioned we can follow this formula:
 
 $$
-r=L(current)/L(proposal)​
+r=L(proposal)/L(current)​
 $$
 
 But since `lik` gives us the log of likelihood values, we can rework the formula to this:
@@ -625,7 +625,7 @@ prior_fn_normal <- function(par) { # par = c(lambda, mu)
 This then affects the current likelihood values by:
 
 ```{r}
-current_lik <- current_lik + log(prior_fn_normal(current_par)) # Posterior = Prior x Likelihood but eveerything is in log so we just add them
+current_lik <- current_lik + log(prior_fn_normal(current_par)) # Posterior = Prior x Likelihood but everything is in log so we just add them
 ```
 
 Recall that in the Bayes Theorem formula we need to divide *Likelihood* by *Marginal likelihood* or *Evidence*. However, in the Metropolis-Hastings algorithm we are working with the acceptance ratio `r`. When making this calculation, the *Marginal likelihood* is present in both the current and proposed posterior value so the *Marginal* value is cancelled out.
