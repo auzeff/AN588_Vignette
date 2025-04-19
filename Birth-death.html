@@ -647,9 +647,9 @@ Solution
 </div>
 </div>
 <p>Given the tree <code>phylo_small</code>, we’re going to use Maximum Likelihood Estimation (MLE) to estimate the parameters (<span class="math inline">\(λ\)</span> and <span class="math inline">\(µ\)</span>) with values that maximize the probability of observing our <code>phylo_small</code> tree.</p>
-<p>Earlier, we showed how we could compare likelihood functions with different parameter values inputted in order to assess how well those given parameter value maximize the likelihood of observing the <code>phylo</code> data. We could make an algorithm that searches for the parameter values that maximize this likelihood score for <code>phylo_small</code>. This function would would iteratively adjust parameters in search of values that minimize the negative log-likelihood (which translates to maximizing the likelihood if you recall how log values work!)</p>
+<p>Earlier, we showed how we could compare likelihood functions with different parameter values inputted in order to assess how well those given parameter values maximize the likelihood of observing the <code>phylo</code> data. We could make an algorithm that searches for the parameter values that maximize this likelihood score for <code>phylo_small</code>. This function would would iteratively adjust parameters in search of values that minimize the negative log-likelihood (which translates to maximizing the likelihood).</p>
 <p>This optimization process adjusts the parameters, beginning with the initial ones we provide, and then continuously updates the parameters in order to “improve” the likelihood. This process eventually converges on a final solution, which is the output we get in the form of a set of parameters. The process ceases (or “converges”) when adjustments to the parameters no longer change/improve the likelihood significantly.</p>
-<p>The following likelihood surface plot might be helpful in giving you a rough idea of what point the algorithm might come when searching for the optimized parameters for <code>phylo_small</code>. You can get an idea from this plot what values we might might more or less expect when we finally perform our analysis. Plus, it’s fun to look at!</p>
+<p>The following likelihood surface plot might be helpful in giving you a rough idea of what point the algorithm might converge on when searching for the optimized parameters for <code>phylo_small</code>. You can get an idea from this plot which values we might more or less expect when we finally perform our analysis. Plus, it’s fun to look at!</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>lambda_vals <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="fl">0.1</span>, <span class="fl">0.3</span>, <span class="at">length.out =</span> <span class="dv">50</span>) <span class="co"># define a range for lambda values</span></span>
 <span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>mu_vals <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="fl">0.01</span>, <span class="fl">0.2</span>, <span class="at">length.out =</span> <span class="dv">50</span>) <span class="co"># define a range for mu values</span></span>
@@ -903,7 +903,7 @@ Solution
 </div>
 <p>As directed by the Metropolis-Hastings part of the algorithm, we now need to decide if to accept or reject this new set of parameters. As mentioned we can follow this formula:</p>
 <p><span class="math display">\[
-r=L(current)/L(proposal)​
+r=L(proposal)/L(current)​
 \]</span></p>
 <p>But since <code>lik</code> gives us the log of likelihood values, we can rework the formula to this:</p>
 <p><span class="math display">\[
@@ -963,7 +963,7 @@ P(λ,μ)=P(λ)⋅P(μ)
 </div>
 <p>This then affects the current likelihood values by:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb60"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb60-1"><a href="#cb60-1" aria-hidden="true" tabindex="-1"></a>current_lik <span class="ot">&lt;-</span> current_lik <span class="sc">+</span> <span class="fu">log</span>(<span class="fu">prior_fn_normal</span>(current_par)) <span class="co"># Posterior = Prior x Likelihood but eveerything is in log so we just add them</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb60"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb60-1"><a href="#cb60-1" aria-hidden="true" tabindex="-1"></a>current_lik <span class="ot">&lt;-</span> current_lik <span class="sc">+</span> <span class="fu">log</span>(<span class="fu">prior_fn_normal</span>(current_par)) <span class="co"># Posterior = Prior x Likelihood but everything is in log so we just add them</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Recall that in the Bayes Theorem formula we need to divide <em>Likelihood</em> by <em>Marginal likelihood</em> or <em>Evidence</em>. However, in the Metropolis-Hastings algorithm we are working with the acceptance ratio <code>r</code>. When making this calculation, the <em>Marginal likelihood</em> is present in both the current and proposed posterior value so the <em>Marginal</em> value is cancelled out.</p>
 <p>To put it all together, we come up with our custom MCMC R function:</p>
